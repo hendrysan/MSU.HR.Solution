@@ -1,0 +1,151 @@
+
+
+https://superuser.com/questions/613857/ubuntu-how-to-ftp-transfer-files-to-folder-var-www
+https://www.digitalocean.com/community/tutorials/how-to-set-up-vsftpd-for-a-user-s-directory-on-ubuntu-20-04
+
+
+install dotnet core SDK+runtime
+
+1. ---------------------------------
+sudo apt-get update && \
+  sudo apt-get install -y dotnet-sdk-7.0
+
+
+
+2. ---------------------------------
+sudo apt-get update && \
+  sudo apt-get install -y aspnetcore-runtime-7.0
+
+
+3. ---------------------------------
+sudo apt-get install -y dotnet-runtime-7.0
+
+4. ---------------------------------
+dotnet —-version
+
+
+
+install nginx
+
+1. ---------------------------------
+sudo apt-get install nginx
+
+
+2. ---------------------------------
+sudo service nginx start
+
+3. ---------------------------------
+sudo service nginx status
+
+4. ---------------------------------
+nano /etc/nginx/sites-available/default
+
+5. ---------------------------------
+server {
+	listen 80;
+	location / {
+		proxy_pass http://localhost:5000;
+		proxy_http_version 1.1;
+		proxy_set_header Upgrade $http_upgrade;
+		proxy_set_header Connection keep-alive;
+		proxy_set_header Host $http_host;
+		proxy_cache_bypass $http_upgrade;
+	}
+}
+
+6. ---------------------------------
+sudo nginx -t
+
+7. ---------------------------------
+sudo nginx -s reload OR sudo service nginx start
+
+
+
+Register Project Nginx in a service file
+
+1. ---------------------------------
+cd /var/www/AppWebsite/
+
+2. ---------------------------------
+dotnet Payroll.AppWebsite.dll --urls=http://0.0.0.0:5000
+
+
+dotnet MSU.HR.WebApi.dll --urls=http://0.0.0.0:5000
+
+
+OR
+
+dotnet /var/www/AppWebsite/Payroll.AppWebsite.dll
+
+chown -R user-ftp /var/www/*
+
+
+
+
+Kill process
+
+lsof -i: <port number>
+e.g.
+
+lsof -i:5000
+lsof -i:5001
+lsof -i:8090
+Then kill the process number:
+
+kill -9 <process number / PID>
+e.g.
+
+kill -9 8090
+
+
+https://askubuntu.com/questions/172514/how-do-i-uninstall-mysql
+
+
+
+https://www.cloudbooklet.com/how-to-secure-your-ubuntu-server-with-csf-firewall/
+
+
+https://medium.com/analytics-vidhya/ubuntu-screen-run-terminal-processes-in-the-background-495baaa1d138
+
+
+
+env GOOS=linux GOARCH=arm go build
+Then you can modify the permissions of the binary to be executable:
+
+
+cd /var/www/appservice/go
+chmod +x server
+./server
+
+
+
+chmod +x my-app
+And simply execute it:
+
+./my-app
+
+https://stackoverflow.com/questions/29341813/bash-run-an-executable-file-in-background
+
+ ./yourExecutable.exe&
+
+
+
+
+https://linuxize.com/post/how-to-use-linux-screen/#starting-named-session
+bikin session
+screen -S session_name
+
+keluar session
+Ctrl+a + d 
+
+keluar session 
+screen -X -S [session # you want to kill] quit
+screen -XS 84869 quit
+
+cara masuk session
+screen -r 2477
+
+show list
+screen -ls
+
+screen -wipe PID
