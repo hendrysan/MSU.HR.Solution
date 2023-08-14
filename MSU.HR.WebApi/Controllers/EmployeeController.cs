@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MSU.HR.Models.Entities;
 using MSU.HR.Models.Others;
 using MSU.HR.Models.Requests;
 using MSU.HR.Models.Responses;
@@ -18,15 +17,11 @@ namespace MSU.HR.WebApi.Controllers
         private readonly IEmployee _employee;
 
 
-        public EmployeeController(ILogger<EmployeeController> logger, IConfiguration configuration,
-            IEmployee employee)
+        public EmployeeController(ILogger<EmployeeController> logger, IConfiguration configuration, IEmployee employee)
         {
             _employee = employee;
             _logger = logger;
             _configuration = configuration;
-
-
-            //userIdentity = new UserIdentityModel(User.Identity as ClaimsIdentity);
         }
 
         [HttpGet]

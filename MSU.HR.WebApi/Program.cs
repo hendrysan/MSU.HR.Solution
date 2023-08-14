@@ -129,7 +129,7 @@ builder.Services.Configure<SecurityStampValidatorOptions>(options =>
 
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddScoped<IUser,UserRepository>();
+builder.Services.AddScoped<IUser, UserRepository>();
 builder.Services.AddScoped<IToken, TokenRepository>();
 builder.Services.AddScoped<ILogError, LogErrorRepository>();
 builder.Services.AddScoped<ICorporate, CorporateRepository>();
@@ -152,11 +152,11 @@ builder.Services.AddScoped<ITimeOff, TimeOffRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
-app.UseSwagger();
-app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SecureSwagger v1"));
-//}
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SecureSwagger v1"));
+}
 
 app.UseHttpsRedirection();
 
