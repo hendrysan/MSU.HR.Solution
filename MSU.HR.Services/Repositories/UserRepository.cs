@@ -108,5 +108,33 @@ namespace MSU.HR.Services.Repositories
                 throw new Exception("Bank GetProfile Error : " + ex.Message);
             }
         }
+
+        public async Task<int> EmployeeUserConnectedAsync(string code)
+        {
+            try
+            {
+                var user = await _context.Users.Where(i => i.IsActive == true && i.Code == code).FirstOrDefaultAsync();
+                if (user == null)
+                    return 0;
+
+                var employees = await _context.Employees.Where(i => i.IsActive && i.Code == code).FirstOrDefaultAsync();
+                if (employees == null)
+                    return 0;
+
+                var corporate = await _context.Corporates.FirstAsync();
+                var role = await _context.Roles.FirstAsync();
+
+                user.Employee = employees;
+                user.Role = role;
+                user.Corporate = corporate;
+                user.IsConnected = true;
+                return await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                await _logError.SaveAsync(ex, code);
+                throw new Exception("TypeEmployee Create Error : " + ex.Message);
+            }
+        }
     }
 }

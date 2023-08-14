@@ -56,22 +56,22 @@ namespace MSU.HR.Models.Entities
         [StringLength(250, MinimumLength = 3)]
         public string BankAccountNumber { get; set; }
 
-        [Required]
-        public Bank Bank { get; set; }
-        [Required]
-        public Department Department { get; set; }
-        [Required]
-        public Education Education { get; set; }
-        [Required]
-        public Grade Grade { get; set; }
-        [Required]
-        public Job Job { get; set; }
-        [Required]
-        public PTKP PTKP { get; set; }
-        [Required]
-        public Section Section { get; set; }
-        [Required]
-        public TypeEmployee TypeEmployee { get; set; }
+        
+        public Bank? Bank { get; set; }
+        
+        public Department? Department { get; set; }
+        
+        public Education? Education { get; set; }
+        
+        public Grade? Grade { get; set; }
+        
+        public Job? Job { get; set; }
+        
+        public PTKP? PTKP { get; set; }
+        
+        public Section? Section { get; set; }
+        
+        public TypeEmployee? TypeEmployee { get; set; }
         
         public decimal BaseSalery { get; set; }
 

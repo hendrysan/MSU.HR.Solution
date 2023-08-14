@@ -5,6 +5,7 @@ namespace MSU.HR.Services.Interfaces
     public interface IUser
     {
         Task<int> EmployeeUserConnectedAsync();
+        Task<int> EmployeeUserConnectedAsync(string code);
         Task<int> ChangePassword();
         Task<AspNetUser?> GetProfile();
         Task<AspNetUser?> GetProfile(string code);

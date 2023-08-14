@@ -97,7 +97,6 @@ namespace MSU.HR.WebApi.Controllers
         [Authorize]
         public async Task<IActionResult> EmployeeConnection()
         {
-
             var task = await _user.EmployeeUserConnectedAsync();
             return Ok(task);
         }
@@ -128,7 +127,7 @@ namespace MSU.HR.WebApi.Controllers
             var result = await _userManager.CreateAsync(user, request.Password);
             if (result.Succeeded)
             {
-                await _user.EmployeeUserConnectedAsync();
+                await _user.EmployeeUserConnectedAsync(code: request.CodeNIK);
                 request.Password = "";
                 return CreatedAtAction(nameof(Register), new { email = request.Email }, request);
             }

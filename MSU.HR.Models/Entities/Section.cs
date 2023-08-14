@@ -16,6 +16,9 @@ namespace MSU.HR.Models.Entities
         [StringLength(250, MinimumLength = 3)]
         public string Name { get; set; }
 
+        [Required]
+        public Department Department { get; set; }
+
         public bool IsActive { get; set; }
         public DateTime CreatedDate { get; set; }
 

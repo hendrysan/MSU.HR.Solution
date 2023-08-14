@@ -26,9 +26,10 @@ namespace MSU.HR.Services.Repositories
         private readonly IPTKP _PTKP;
         private readonly ISection _section;
         private readonly ITypeEmployee _typeEmployee;
+        private readonly IUser _user;
 
         public EmployeeRepository(DatabaseContext context, IHttpContextAccessor httpContextAccessor, ILogError logError, IBank bank, IDepartment department, IEducation education, IGrade grade,
-            IJob job, IPTKP PTKP, ISection section, ITypeEmployee typeEmployee)
+            IJob job, IPTKP PTKP, ISection section, ITypeEmployee typeEmployee, IUser user)
         {
             _context = context;
             _httpContextAccessor = httpContextAccessor;
@@ -42,6 +43,7 @@ namespace MSU.HR.Services.Repositories
             _PTKP = PTKP;
             _section = section;
             _typeEmployee = typeEmployee;
+            _user = user;
         }
 
         public async Task<bool> CheckCodeExistsAsync(string code)
@@ -110,7 +112,9 @@ namespace MSU.HR.Services.Repositories
                 employee.LastUpdatedBy = userIdentity.Id.ToString();
                 employee.LastUpdatedDate = DateTime.Now;
                 _context.Employees.Add(employee);
-                return await _context.SaveChangesAsync();
+                var result = await _context.SaveChangesAsync();
+                await _user.EmployeeUserConnectedAsync(employee.Code);
+                return result;
             }
             catch (Exception ex)
             {
@@ -259,8 +263,9 @@ namespace MSU.HR.Services.Repositories
                 find.ZipCode = request.ZipCode;
                 find.LastUpdatedBy = userIdentity.Id.ToString();
                 find.LastUpdatedDate = DateTime.Now;
-
-                return await _context.SaveChangesAsync();
+                var result = await _context.SaveChangesAsync();
+                await _user.EmployeeUserConnectedAsync(find.Code);
+                return result;
             }
             catch (Exception ex)
             {
