@@ -70,93 +70,93 @@ namespace MSU.HR.WebApi.Controllers
             return Ok(response);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<PostResponse>> Post([FromBody] GradeRequest request)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+        //[HttpPost]
+        //public async Task<ActionResult<PostResponse>> Post([FromBody] GradeRequest request)
+        //{
+        //    if (!ModelState.IsValid)
+        //        return BadRequest(ModelState);
 
-            var codeExists = await _grade.CheckCodeExistsAsync(request.Code);
-            if (codeExists)
-            {
-                ModelState.AddModelError("Code", "Code already exists");
-                return BadRequest(ModelState);
-            }
+        //    var codeExists = await _grade.CheckCodeExistsAsync(request.Code);
+        //    if (codeExists)
+        //    {
+        //        ModelState.AddModelError("Code", "Code already exists");
+        //        return BadRequest(ModelState);
+        //    }
 
-            Grade Grade = new()
-            {
-                Name = request.Name,
-                Code = request.Code
-            };
+        //    Grade Grade = new()
+        //    {
+        //        Name = request.Name,
+        //        Code = request.Code
+        //    };
 
-            var task = await _grade.CreateAsync(Grade);
-            if (task == 0)
-            {
-                ModelState.AddModelError("Error", "Invalid Request");
-                return BadRequest(ModelState);
-            }
-            else
-                return Ok(new PostResponse
-                {
-                    Data = request,
-                    IsSuccess = task > 0,
-                    Message = ""
-                });
-        }
+        //    var task = await _grade.CreateAsync(Grade);
+        //    if (task == 0)
+        //    {
+        //        ModelState.AddModelError("Error", "Invalid Request");
+        //        return BadRequest(ModelState);
+        //    }
+        //    else
+        //        return Ok(new PostResponse
+        //        {
+        //            Data = request,
+        //            IsSuccess = task > 0,
+        //            Message = ""
+        //        });
+        //}
 
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult<PostResponse>> Put(Guid id, [FromBody] GradeRequest request)
-        {
-            if (!ModelState.IsValid && id == Guid.Empty)
-                return BadRequest(ModelState);
+        //[HttpPut("{id}")]
+        //public async Task<ActionResult<PostResponse>> Put(Guid id, [FromBody] GradeRequest request)
+        //{
+        //    if (!ModelState.IsValid && id == Guid.Empty)
+        //        return BadRequest(ModelState);
 
-            Grade Grade = new()
-            {
-                Name = request.Name,
-                Code = request.Code
-            };
+        //    Grade Grade = new()
+        //    {
+        //        Name = request.Name,
+        //        Code = request.Code
+        //    };
 
-            var task = await _grade.UpdateAsync(id, Grade);
-            if (task == 0)
-            {
-                ModelState.AddModelError("Id", "Data not found");
-                return BadRequest(ModelState);
-            }
-            else
-                return Ok(new PostResponse
-                {
-                    Data = request,
-                    IsSuccess = task > 0,
-                    Message = ""
-                });
-        }
+        //    var task = await _grade.UpdateAsync(id, Grade);
+        //    if (task == 0)
+        //    {
+        //        ModelState.AddModelError("Id", "Data not found");
+        //        return BadRequest(ModelState);
+        //    }
+        //    else
+        //        return Ok(new PostResponse
+        //        {
+        //            Data = request,
+        //            IsSuccess = task > 0,
+        //            Message = ""
+        //        });
+        //}
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(Guid id)
-        {
-            if (id == Guid.Empty)
-            {
-                return BadRequest(ModelState);
-            }
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> Delete(Guid id)
+        //{
+        //    if (id == Guid.Empty)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-            _logger.LogInformation("Get Data");
-            var task = await _grade.DeleteAsync(id);
+        //    _logger.LogInformation("Get Data");
+        //    var task = await _grade.DeleteAsync(id);
 
-            if (task == 0)
-            {
-                ModelState.AddModelError("Id", "Data not found");
-                return BadRequest(ModelState);
-            }
-            else
-            {
-                return Ok(new PostResponse
-                {
-                    Data = task,
-                    IsSuccess = task > 0,
-                    Message = ""
-                });
-            }
-        }
+        //    if (task == 0)
+        //    {
+        //        ModelState.AddModelError("Id", "Data not found");
+        //        return BadRequest(ModelState);
+        //    }
+        //    else
+        //    {
+        //        return Ok(new PostResponse
+        //        {
+        //            Data = task,
+        //            IsSuccess = task > 0,
+        //            Message = ""
+        //        });
+        //    }
+        //}
     }
 }

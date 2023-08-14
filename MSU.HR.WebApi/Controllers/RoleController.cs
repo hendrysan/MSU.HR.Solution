@@ -70,95 +70,95 @@ namespace MSU.HR.WebApi.Controllers
             return Ok(response);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<PostResponse>> Post([FromBody] RoleRequest request)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+        //[HttpPost]
+        //public async Task<ActionResult<PostResponse>> Post([FromBody] RoleRequest request)
+        //{
+        //    if (!ModelState.IsValid)
+        //        return BadRequest(ModelState);
 
-            var codeExists = await _role.CheckCodeExistsAsync(request.Code);
-            if (codeExists)
-            {
-                ModelState.AddModelError("Code", "Code already exists");
-                return BadRequest(ModelState);
-            }
+        //    var codeExists = await _role.CheckCodeExistsAsync(request.Code);
+        //    if (codeExists)
+        //    {
+        //        ModelState.AddModelError("Code", "Code already exists");
+        //        return BadRequest(ModelState);
+        //    }
 
-            Role Role = new()
-            {
-                Name = request.Name,
-                Code = request.Code,
-                Description = request.Description
-            };
+        //    Role Role = new()
+        //    {
+        //        Name = request.Name,
+        //        Code = request.Code,
+        //        Description = request.Description
+        //    };
 
-            var task = await _role.CreateAsync(Role);
-            if (task == 0)
-            {
-                ModelState.AddModelError("Error", "Invalid Request");
-                return BadRequest(ModelState);
-            }
-            else
-                return Ok(new PostResponse
-                {
-                    Data = request,
-                    IsSuccess = task > 0,
-                    Message = ""
-                });
-        }
+        //    var task = await _role.CreateAsync(Role);
+        //    if (task == 0)
+        //    {
+        //        ModelState.AddModelError("Error", "Invalid Request");
+        //        return BadRequest(ModelState);
+        //    }
+        //    else
+        //        return Ok(new PostResponse
+        //        {
+        //            Data = request,
+        //            IsSuccess = task > 0,
+        //            Message = ""
+        //        });
+        //}
 
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult<PostResponse>> Put(Guid id, [FromBody] RoleRequest request)
-        {
-            if (!ModelState.IsValid && id == Guid.Empty)
-                return BadRequest(ModelState);
+        //[HttpPut("{id}")]
+        //public async Task<ActionResult<PostResponse>> Put(Guid id, [FromBody] RoleRequest request)
+        //{
+        //    if (!ModelState.IsValid && id == Guid.Empty)
+        //        return BadRequest(ModelState);
 
-            Role Role = new()
-            {
-                Name = request.Name,
-                Code = request.Code,
-                Description= request.Description
-            };
+        //    Role Role = new()
+        //    {
+        //        Name = request.Name,
+        //        Code = request.Code,
+        //        Description= request.Description
+        //    };
 
-            var task = await _role.UpdateAsync(id, Role);
-            if (task == 0)
-            {
-                ModelState.AddModelError("Id", "Data not found");
-                return BadRequest(ModelState);
-            }
-            else
-                return Ok(new PostResponse
-                {
-                    Data = request,
-                    IsSuccess = task > 0,
-                    Message = ""
-                });
-        }
+        //    var task = await _role.UpdateAsync(id, Role);
+        //    if (task == 0)
+        //    {
+        //        ModelState.AddModelError("Id", "Data not found");
+        //        return BadRequest(ModelState);
+        //    }
+        //    else
+        //        return Ok(new PostResponse
+        //        {
+        //            Data = request,
+        //            IsSuccess = task > 0,
+        //            Message = ""
+        //        });
+        //}
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(Guid id)
-        {
-            if (id == Guid.Empty)
-            {
-                return BadRequest(ModelState);
-            }
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> Delete(Guid id)
+        //{
+        //    if (id == Guid.Empty)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-            _logger.LogInformation("Get Data");
-            var task = await _role.DeleteAsync(id);
+        //    _logger.LogInformation("Get Data");
+        //    var task = await _role.DeleteAsync(id);
 
-            if (task == 0)
-            {
-                ModelState.AddModelError("Id", "Data not found");
-                return BadRequest(ModelState);
-            }
-            else
-            {
-                return Ok(new PostResponse
-                {
-                    Data = task,
-                    IsSuccess = task > 0,
-                    Message = ""
-                });
-            }
+        //    if (task == 0)
+        //    {
+        //        ModelState.AddModelError("Id", "Data not found");
+        //        return BadRequest(ModelState);
+        //    }
+        //    else
+        //    {
+        //        return Ok(new PostResponse
+        //        {
+        //            Data = task,
+        //            IsSuccess = task > 0,
+        //            Message = ""
+        //        });
+        //    }
         }
     }
 }
