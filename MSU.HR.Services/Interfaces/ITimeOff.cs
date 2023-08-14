@@ -13,8 +13,10 @@ namespace MSU.HR.Services.Interfaces
         Task<int> FinishAsync(Guid timeOffId);
         Task<int> ExpiredAsync(Guid userId);
         Task<Employee?> GetUserSuperiorityAsync(string code);
-        Task<IEnumerable<TimeOff>> GetTimeOffsAsync(Guid userId);
+        Task<IEnumerable<TimeOff>?> GetTimeOffsAsync(Guid userId);
+        Task<IEnumerable<TimeOff>?> GetPendingApprovalTimeOffsAsync(Guid userId);
+        Task<IEnumerable<TimeOff>?> GetPendingFinishTimeOffsAsync();
         Task<TimeOff> GetTimeOffDetailAsync(Guid userId, Guid timeOffId);
-        Task<IEnumerable<TimeOffHistory>> GetTimeOffHistoriesAsync(Guid timeOffId);
+        Task<IEnumerable<TimeOffHistory>?> GetTimeOffHistoriesAsync(Guid timeOffId);
     }
 }

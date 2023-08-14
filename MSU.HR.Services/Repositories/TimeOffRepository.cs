@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using MSU.HR.Commons.Enums;
 using MSU.HR.Contexts;
 using MSU.HR.Models.Entities;
@@ -53,13 +54,16 @@ namespace MSU.HR.Services.Repositories
         {
             try
             {
-                var statusBefore = StatusTimeOffEnum.REQUEST;
-                var trxExists = await _context.TimeOffs.Where(i => i.UserId == userIdentity.Id && i.StatusId == statusBefore.ToString()).ToListAsync();
-                if (trxExists.Count > 0)
-                    return 0;
-
+                var statusBefore = StatusTimeOffEnum.REQUEST;                
                 var trx = await _context.TimeOffs.Where(i => i.Id == timeOffId).FirstOrDefaultAsync();
                 if (trx == null)
+                    return 0;
+
+                if (trx.StatusId != statusBefore.ToString())
+                    return 0;
+
+                var user = await _context.Employees.Where(i => i.Code == userIdentity.Code).FirstOrDefaultAsync();
+                if (trx.ApprovedBy != user.Id)
                     return 0;
 
                 var status = StatusTimeOffEnum.APPROVED;
@@ -115,12 +119,12 @@ namespace MSU.HR.Services.Repositories
             }
         }
 
-        public async Task<IEnumerable<TimeOffHistory>> GetTimeOffHistoriesAsync(Guid timeOffId)
+        public async Task<IEnumerable<TimeOffHistory>?> GetTimeOffHistoriesAsync(Guid timeOffId)
         {
             try
             {
                 var histories = await _context.TimeOffHistories.Where(i => i.TimeOffId == timeOffId).ToListAsync();
-                return histories.OrderBy(i => i.CreatedDate).ToList();
+                return histories.OrderByDescending(i => i.CreatedDate).ToList();
             }
             catch (Exception ex)
             {
@@ -129,7 +133,7 @@ namespace MSU.HR.Services.Repositories
             }
         }
 
-        public async Task<IEnumerable<TimeOff>> GetTimeOffsAsync(Guid userId)
+        public async Task<IEnumerable<TimeOff>?> GetTimeOffsAsync(Guid userId)
         {
             try
             {
@@ -168,7 +172,7 @@ namespace MSU.HR.Services.Repositories
             if (superiors.Count == 0)
                 return null;
 
-            var superior = superiors.Where(i => Convert.ToInt32(i.Grade?.Code) > Convert.ToInt32(grade?.Code)).OrderDescending().FirstOrDefault();
+            var superior = superiors.Where(i => Convert.ToInt32(i.Grade?.Code) < Convert.ToInt32(grade?.Code)).OrderDescending().FirstOrDefault();
             return superior;
         }
 
@@ -183,6 +187,9 @@ namespace MSU.HR.Services.Repositories
 
                 var trx = await _context.TimeOffs.Where(i => i.Id == timeOffId).FirstOrDefaultAsync();
                 if (trx == null)
+                    return 0;
+
+                if (trx.ApprovedBy != userIdentity.Id)
                     return 0;
 
                 var status = StatusTimeOffEnum.REJECT;
@@ -211,6 +218,7 @@ namespace MSU.HR.Services.Repositories
                     return 0;
 
                 var reason = await _context.Reasons.Where(i => i.Id == request.ReasonId).FirstOrDefaultAsync();
+                var approvedBy = await GetUserSuperiorityAsync(userIdentity.Code);
 
                 TimeOff trx = new TimeOff();
                 trx.Id = Guid.NewGuid();
@@ -222,11 +230,11 @@ namespace MSU.HR.Services.Repositories
                 trx.Notes = request.Notes;
                 trx.Taken = request.Taken;
                 trx.StatusId = status.ToString();
-                trx.ApprovedBy = Guid.Empty;
+                trx.ApprovedBy = approvedBy == null ? Guid.Empty : approvedBy.Id;
                 trx.CreatedDate = DateTime.Now;
                 _context.TimeOffs.Add(trx);
                 var result = await _context.SaveChangesAsync();
-                await SaveHistory(trx.Id, request.Notes, status);
+                await SaveHistory(trx.Id, request.Notes ?? string.Empty, status);
                 return result;
             }
             catch (Exception ex)
@@ -297,12 +305,22 @@ namespace MSU.HR.Services.Repositories
             try
             {
                 var statusBefore = StatusTimeOffEnum.APPROVED;
-                var trxExists = await _context.TimeOffs.Where(i => i.UserId == userIdentity.Id && i.StatusId == statusBefore.ToString()).ToListAsync();
-                if (trxExists.Count > 0)
-                    return 0;
 
                 var trx = await _context.TimeOffs.Where(i => i.Id == timeOffId).FirstOrDefaultAsync();
                 if (trx == null)
+                    return 0;
+
+                if (trx.StatusId != statusBefore.ToString())
+                    return 0;
+
+                var user = await _context.Employees.Where(i => i.Code == userIdentity.Code).Include(i => i.Department).FirstOrDefaultAsync();
+                if (user == null)
+                    return 0;
+
+                if (user.Department == null)
+                    return 0;
+
+                if (user.Department.Code != "HRD")
                     return 0;
 
                 var status = StatusTimeOffEnum.FINISH;
@@ -318,6 +336,47 @@ namespace MSU.HR.Services.Repositories
             {
                 await _logError.SaveAsync(ex, JsonSerializer.Serialize(timeOffId));
                 throw new Exception("Time Off FinishAsync Error : " + ex.Message);
+            }
+        }
+
+        public async Task<IEnumerable<TimeOff>?> GetPendingApprovalTimeOffsAsync(Guid userId)
+        {
+            try
+            {
+                var status = StatusTimeOffEnum.REQUEST.ToString();
+                var trx = await _context.TimeOffs.Where(i => i.ApprovedBy == userId && i.StatusId == status).Include(r => r.Reason).ToListAsync();
+                return trx.OrderByDescending(i => i.CreatedDate).ToList();
+            }
+            catch (Exception ex)
+            {
+                await _logError.SaveAsync(ex, JsonSerializer.Serialize(userId));
+                throw new Exception("Time Off GetPendingApprovalTimeOffsAsync Error : " + ex.Message);
+            }
+        }
+
+        public async Task<IEnumerable<TimeOff>?> GetPendingFinishTimeOffsAsync()
+        {
+            try
+            {
+                var employee = await _context.Employees.Where(i => i.Code == userIdentity.Code).Include(i => i.Department).FirstOrDefaultAsync();
+                if (employee == null)
+                    return null;
+
+                if (employee.Department == null)
+                    return null;
+
+                if (employee.Department.Code != "HRD")
+                    return null;
+
+
+                var status = StatusTimeOffEnum.APPROVED.ToString();
+                var trx = await _context.TimeOffs.Where(i => i.StatusId == status).Include(r => r.Reason).ToListAsync();
+                return trx.OrderByDescending(i => i.CreatedDate).ToList();
+            }
+            catch (Exception ex)
+            {
+                await _logError.SaveAsync(ex, JsonSerializer.Serialize(string.Empty));
+                throw new Exception("Time Off GetPendingFinishTimeOffsAsync Error : " + ex.Message);
             }
         }
     }
