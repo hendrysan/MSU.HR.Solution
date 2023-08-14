@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MSU.HR.Contexts;
@@ -8,7 +7,6 @@ using MSU.HR.Models.Entities;
 using MSU.HR.Services.Interfaces;
 using MSU.HR.Services.Repositories;
 using System.Text;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
