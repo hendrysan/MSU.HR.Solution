@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MSU.HR.Commons.Extensions;
 using MSU.HR.Contexts;
@@ -17,12 +18,15 @@ namespace MSU.HR.Services.Repositories
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly UserIdentityModel userIdentity;
         private readonly ILogError _logError;
-        public BankRepository(DatabaseContext context, IHttpContextAccessor httpContextAccessor, ILogError logError)
+        private readonly IResponse _response;
+
+        public BankRepository(DatabaseContext context, IHttpContextAccessor httpContextAccessor, ILogError logError, IResponse response)
         {
             _context = context;
             _httpContextAccessor = httpContextAccessor;
             userIdentity = new UserIdentityModel(_httpContextAccessor.HttpContext.User.Identity as ClaimsIdentity);
             _logError = logError;
+            _response = response;
         }
 
         public async Task<bool> CheckCodeExistsAsync(string code)
@@ -36,7 +40,8 @@ namespace MSU.HR.Services.Repositories
             catch (Exception ex)
             {
                 await _logError.SaveAsync(ex, JsonSerializer.Serialize(code));
-                throw new Exception("Bank CheckCodeExistsAsync Error : " + ex.Message);
+                await _response.Error(ex.Message, code);
+                //throw new Exception("Bank CheckCodeExistsAsync Error : " + ex.Message);
             }
         }
 

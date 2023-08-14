@@ -4,8 +4,10 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MSU.HR.Contexts;
 using MSU.HR.Models.Entities;
+using MSU.HR.Models.Others;
 using MSU.HR.Services.Interfaces;
 using MSU.HR.Services.Repositories;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -101,15 +103,16 @@ builder.Services
                 {
                     context.Response.StatusCode = 401;
 
-                    //var response = new
-                    //{
-                    //    Status = "Unauthorize",
-                    //    Message = "Token Validation Has Failed. Request Access Denied"
+                    ErrorModel response = new ErrorModel()
+                    {
+                        IsSuccess = false,
+                        ErrorCode = 401,
+                        Message = "Token Validation Has Failed. Request Access Denied"
 
-                    //};
+                    };
                     // we can write our own custom response content here
                     //await context.HttpContext.Response.WriteAsync("Token Validation Has Failed. Request Access Denied");
-                    await context.HttpContext.Response.WriteAsync("Token Validation Has Failed. Request Access Denied");
+                    await context.Response.WriteAsJsonAsync(response);
                 }
             }
         };
@@ -127,6 +130,7 @@ builder.Services.Configure<SecurityStampValidatorOptions>(options =>
 
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddScoped<IResponse, ResponseRepository>();
 builder.Services.AddScoped<IUser, UserRepository>();
 builder.Services.AddScoped<IToken, TokenRepository>();
 builder.Services.AddScoped<ILogError, LogErrorRepository>();
