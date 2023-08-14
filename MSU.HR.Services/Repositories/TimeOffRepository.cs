@@ -134,7 +134,7 @@ namespace MSU.HR.Services.Repositories
             try
             {
                 var trx = await _context.TimeOffs.Where(i => i.UserId == userId).Include(r => r.Reason).ToListAsync();
-                return trx.OrderByDescending(i=>i.CreatedDate).ToList();
+                return trx.OrderByDescending(i => i.CreatedDate).ToList();
             }
             catch (Exception ex)
             {
@@ -143,9 +143,33 @@ namespace MSU.HR.Services.Repositories
             }
         }
 
-        public Task<Guid> GetUserSuperiorityAsync(Guid userId)
+        public async Task<Employee?> GetUserSuperiorityAsync(string code)
         {
-            throw new NotImplementedException();
+            var employee = await _context.Employees.Where(i => i.Code == code)
+                .Include(i => i.Department)
+                .Include(i => i.Section)
+                .Include(i => i.Grade)
+                .FirstOrDefaultAsync();
+
+            if (employee == null)
+                return null;
+
+            var department = employee.Department;
+            var section = employee.Section;
+            var grade = employee.Grade;
+
+            var superiors = await _context.Employees
+                .Include(i => i.Department)
+                .Include(i => i.Section)
+                .Include(i => i.Grade)
+                .Where(i => i.Department == department && i.Section == section && i.IsActive)
+                .ToListAsync();
+
+            if (superiors.Count == 0)
+                return null;
+
+            var superior = superiors.Where(i => Convert.ToInt32(i.Grade?.Code) > Convert.ToInt32(grade?.Code)).OrderDescending().FirstOrDefault();
+            return superior;
         }
 
         public async Task<int> RejectAsync(Guid timeOffId, string remarks)

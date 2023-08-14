@@ -6,7 +6,7 @@ namespace MSU.HR.Services.Interfaces
     {
         Task<int> EmployeeUserConnectedAsync();
         Task<int> EmployeeUserConnectedAsync(string code);
-        Task<int> ChangePassword();
+        Task<int> ChangePassword(Guid userId, string hasPassword);
         Task<AspNetUser?> GetProfile();
         Task<AspNetUser?> GetProfile(string code);
         Task<bool> CheckCodeExistsAsync(string code);

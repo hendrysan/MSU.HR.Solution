@@ -11,5 +11,7 @@ namespace MSU.HR.Models.Requests
         [Required]
         [StringLength(250, MinimumLength = 3)]
         public string Name { get; set; } = string.Empty;
+
+        public Guid DepartmentId { get; set; }
     }
 }

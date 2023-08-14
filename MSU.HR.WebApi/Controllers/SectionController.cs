@@ -24,17 +24,17 @@ namespace MSU.HR.WebApi.Controllers
             //userIdentity = new UserIdentityModel(User.Identity as ClaimsIdentity);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Get()
+        [HttpGet("{departmentId}")]
+        public async Task<IActionResult> Get(Guid departmentId)
         {
             _logger.LogInformation("Get Data");
-            var response = await _section.GetSectionsAsync();
+            var response = await _section.GetSectionsAsync(departmentId);
 
             return Ok(response);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(Guid id)
+        [HttpGet("{departmentId}/{id}")]
+        public async Task<IActionResult> Find(Guid departmentId, Guid id)
         {
             if (id == Guid.Empty)
                 return BadRequest(id);
@@ -47,21 +47,21 @@ namespace MSU.HR.WebApi.Controllers
             return Ok(response);
         }
 
-        [HttpGet("Dropdown")]
-        public async Task<IActionResult> GetDropdown()
+        [HttpGet("Dropdown/{departmentId}")]
+        public async Task<IActionResult> GetDropdown(Guid departmentId)
         {
             _logger.LogInformation("Get Data");
-            var response = await _section.GetDropdownModelAsync();
+            var response = await _section.GetDropdownModelAsync(departmentId);
 
             return Ok(response);
         }
 
-        [HttpGet("Pagination")]
-        public async Task<IActionResult> GetPagination(int pageNumber, int pageSize, string? search)
+        [HttpGet("Pagination/{departmentId}")]
+        public async Task<IActionResult> GetPagination(Guid departmentId, int pageNumber, int pageSize, string? search)
         {
             search = search ?? string.Empty;
 
-            var response = await _section.GetSectionsAsync(search, new PaginationModel()
+            var response = await _section.GetSectionsAsync(departmentId, search, new PaginationModel()
             {
                 PageNumber = pageNumber,
                 PageSize = pageSize
@@ -83,13 +83,7 @@ namespace MSU.HR.WebApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            Section Section = new()
-            {
-                Name = request.Name,
-                Code = request.Code
-            };
-
-            var task = await _section.CreateAsync(Section);
+            var task = await _section.CreateAsync(request);
             if (task == 0)
             {
                 ModelState.AddModelError("Error", "Invalid Request");
@@ -111,13 +105,7 @@ namespace MSU.HR.WebApi.Controllers
             if (!ModelState.IsValid && id == Guid.Empty)
                 return BadRequest(ModelState);
 
-            Section Section = new()
-            {
-                Name = request.Name,
-                Code = request.Code
-            };
-
-            var task = await _section.UpdateAsync(id, Section);
+            var task = await _section.UpdateAsync(id, request);
             if (task == 0)
             {
                 ModelState.AddModelError("Id", "Data not found");

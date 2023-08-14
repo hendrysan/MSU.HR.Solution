@@ -19,6 +19,8 @@ namespace MSU.HR.Models.Entities
         [StringLength(250, MinimumLength = 3)]
         public string Description { get; set; }
 
+        public bool IsDefault { get; set; } = false;
+
         public bool IsActive { get; set; }
         public DateTime CreatedDate { get; set; }
         

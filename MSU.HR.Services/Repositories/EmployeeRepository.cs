@@ -89,23 +89,22 @@ namespace MSU.HR.Services.Repositories
                     Address = request.Address,
                     BankAccountNumber = request.BankAccountNumber,
                     BaseSalery = request.BaseSalery,
-                    BrithDate = request.BrithDate,
+                    BrithDate = request.BrithDate == null ? null : request.BrithDate.Value.Date,
                     City = request.City,
                     Email = request.Email,
                     Gender = request.Gender,
                     GradeAllowance = request.GradeAllowance,
                     Jamsostek = request.Jamsostek,
-                    JoinDate = request.JoinDate,
+                    JoinDate = request.JoinDate.Date,
                     MealAllowance = request.MealAllowance,
                     NoIdentity = request.NoIdentity,
                     NPWP = request.NPWP,
                     OtherAllowance = request.OtherAllowance,
-                    ResignDate = request.ResignDate,
+                    ResignDate = request.ResignDate == null ? null : request.ResignDate.Value.Date,
                     TransportationAllowance = request.TransportationAllowance,
                     ZipCode = request.ZipCode,
                 };
 
-                employee.JoinDate.ToShortDateString();
                 employee.CreatedBy = userIdentity.Id.ToString();
                 employee.CreatedDate = DateTime.Now;
                 employee.IsActive = true;
@@ -148,7 +147,16 @@ namespace MSU.HR.Services.Repositories
         {
             try
             {
-                var entity = await _context.Employees.Where(i => i.IsActive == true && i.Id == id).FirstOrDefaultAsync();
+                var entity = await _context.Employees.Where(i => i.IsActive == true && i.Id == id)
+                    .Include(i => i.Bank)
+                    .Include(i => i.Department)
+                    .Include(i => i.Education)
+                    .Include(i => i.Grade)
+                    .Include(i => i.Job)
+                    .Include(i => i.PTKP)
+                    .Include(i => i.Section)
+                    .Include(i => i.TypeEmployee)
+                    .FirstOrDefaultAsync();
                 return entity;
             }
             catch (Exception ex)
@@ -166,7 +174,16 @@ namespace MSU.HR.Services.Repositories
                 result.Pagination = pagination;
                 result.Pagination.TotalRecord = await _context.Employees.Where(i => i.IsActive == true && i.Code.Contains(search) || i.Name.Contains(search)).CountAsync();
 
-                var list = await _context.Employees.Where(i => i.IsActive == true && i.Code.Contains(search) || i.Name.Contains(search)).Page(pagination.PageNumber, pagination.PageSize).ToListAsync();
+                var list = await _context.Employees.Where(i => i.IsActive == true && i.Code.Contains(search) || i.Name.Contains(search)).Page(pagination.PageNumber, pagination.PageSize)
+                    .Include(i => i.Bank)
+                    .Include(i => i.Department)
+                    .Include(i => i.Education)
+                    .Include(i => i.Grade)
+                    .Include(i => i.Job)
+                    .Include(i => i.PTKP)
+                    .Include(i => i.Section)
+                    .Include(i => i.TypeEmployee)
+                    .ToListAsync();
 
 
                 result.Pagination.TotalPage = (int)Math.Ceiling((double)result.Pagination.TotalRecord / pagination.PageSize);
@@ -247,18 +264,18 @@ namespace MSU.HR.Services.Repositories
                 find.Address = request.Address;
                 find.BankAccountNumber = request.BankAccountNumber;
                 find.BaseSalery = request.BaseSalery;
-                find.BrithDate = request.BrithDate;
+                find.BrithDate = request.BrithDate == null ? null : request.BrithDate.Value.Date;
                 find.City = request.City;
                 find.Email = request.Email;
                 find.Gender = request.Gender;
                 find.GradeAllowance = request.GradeAllowance;
                 find.Jamsostek = request.Jamsostek;
-                find.JoinDate = request.JoinDate;
+                find.JoinDate = request.JoinDate.Date;
                 find.MealAllowance = request.MealAllowance;
                 find.NoIdentity = request.NoIdentity;
                 find.NPWP = request.NPWP;
                 find.OtherAllowance = request.OtherAllowance;
-                find.ResignDate = request.ResignDate;
+                find.ResignDate = request.ResignDate == null ? null : request.ResignDate.Value.Date;
                 find.TransportationAllowance = request.TransportationAllowance;
                 find.ZipCode = request.ZipCode;
                 find.LastUpdatedBy = userIdentity.Id.ToString();

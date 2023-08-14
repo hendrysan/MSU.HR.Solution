@@ -40,10 +40,16 @@ namespace MSU.HR.Services.Repositories
         }
 
 
-        public async Task<int> ChangePassword()
+        public async Task<int> ChangePassword(Guid userId, string hasPassword)
         {
-            //var users = await _context.Users.Where(i => i.IsActive == true && i.Employee == null).ToList();
-            throw new NotImplementedException();
+            var user = await _context.Users.Where(i => i.IsActive == true && i.Id == userId.ToString()).FirstOrDefaultAsync();
+            if (user == null)
+                return 0;
+
+            user.PasswordHash = hasPassword;
+            user.LastModifiedBy = userIdentity.Id.ToString();
+            user.LastModifiedDate = DateTime.Now;
+            return await _context.SaveChangesAsync();
         }
 
         public async Task<int> EmployeeUserConnectedAsync()
@@ -61,12 +67,12 @@ namespace MSU.HR.Services.Repositories
                 if (employees.Count == 0)
                     return 0;
 
-                var corporate = await _context.Corporates.FirstAsync();
-                var role = await _context.Roles.FirstAsync();
+                var corporate = await _context.Corporates.FirstOrDefaultAsync();
+                var role = await _context.Roles.Where(i => i.IsDefault && i.IsActive).FirstOrDefaultAsync();
 
                 foreach (var user in userNotConnected)
                 {
-                    user.Employee = employees.Where(i => i.Code == user.Code).First();
+                    user.Employee = employees.Where(i => i.Code == user.Code).FirstOrDefault();
                     user.Role = role;
                     user.Corporate = corporate;
                     user.IsConnected = true;
@@ -85,7 +91,12 @@ namespace MSU.HR.Services.Repositories
         {
             try
             {
-                var user = await _context.Users.Where(u => u.Id == userIdentity.Id.ToString()).Include(r => r.Role).Include(c => c.Corporate).Include(e => e.Employee).FirstOrDefaultAsync();
+                var user = await _context.Users
+                    .Where(u => u.Id == userIdentity.Id.ToString())
+                    .Include(r => r.Role)
+                    .Include(c => c.Corporate)
+                    .Include(e => e.Employee)
+                    .FirstOrDefaultAsync();
                 return user;
             }
             catch (Exception ex)
@@ -99,7 +110,12 @@ namespace MSU.HR.Services.Repositories
         {
             try
             {
-                var user = await _context.Users.Where(u => u.Code == code).Include(r => r.Role).Include(c => c.Corporate).Include(e => e.Employee).FirstOrDefaultAsync();
+                var user = await _context.Users
+                    .Where(u => u.Code == code)
+                    .Include(r => r.Role)
+                    .Include(c => c.Corporate)
+                    .Include(e => e.Employee)
+                    .FirstOrDefaultAsync();
                 return user;
             }
             catch (Exception ex)
@@ -113,21 +129,35 @@ namespace MSU.HR.Services.Repositories
         {
             try
             {
-                var user = await _context.Users.Where(i => i.IsActive == true && i.Code == code).FirstOrDefaultAsync();
+                var user = await _context.Users.Where(i => i.IsActive == true && i.Code == code)
+                    .Include(i => i.Corporate)
+                    .Include(i => i.Role)
+                    .Include(i => i.Employee)
+                    .FirstOrDefaultAsync();
                 if (user == null)
                     return 0;
 
-                var employees = await _context.Employees.Where(i => i.IsActive && i.Code == code).FirstOrDefaultAsync();
-                if (employees == null)
-                    return 0;
+                if (user.Employee == null)
+                {
+                    var employees = await _context.Employees.Where(i => i.IsActive && i.Code == code).FirstOrDefaultAsync();
+                    if (employees == null)
+                        return 0;
 
-                var corporate = await _context.Corporates.FirstAsync();
-                var role = await _context.Roles.FirstAsync();
+                    user.Employee = employees;
+                    user.IsConnected = true;
+                }
 
-                user.Employee = employees;
-                user.Role = role;
-                user.Corporate = corporate;
-                user.IsConnected = true;
+                if (user.Role == null)
+                {
+                    var role = await _context.Roles.Where(i => i.IsDefault && i.IsActive).FirstOrDefaultAsync();
+                    user.Role = role;
+                }
+
+                if (user.Corporate == null)
+                {
+                    var corporate = await _context.Corporates.FirstOrDefaultAsync();
+                    user.Corporate = corporate;
+                }
                 return await _context.SaveChangesAsync();
             }
             catch (Exception ex)

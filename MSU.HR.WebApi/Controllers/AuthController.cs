@@ -45,9 +45,7 @@ namespace MSU.HR.WebApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var employee = await _employee.GetEmployeeAsync(code: request.CodeNIK);
-            if (employee is null)
-                return Unauthorized();
+           
 
             var user = await _user.GetProfile(code: request.CodeNIK);
             if (user is null)
@@ -61,7 +59,12 @@ namespace MSU.HR.WebApi.Controllers
             if (!isPasswordValid)
                 return BadRequest("Bad credentials");
 
-            
+
+            var employee = await _employee.GetEmployeeAsync(code: request.CodeNIK);
+            //if (employee is null)
+            //    return Unauthorized();
+
+
             //List<Claim>? newClaims = null;
             string accessToken;
 
