@@ -156,6 +156,23 @@ namespace MSU.HR.WebApi.Controllers
             return Ok(response);
         }
 
+        [HttpGet("PendingApproval/{userId}")]
+        public async Task<IActionResult> PendingApproval(Guid userId)
+        {
+            if (userId == Guid.Empty)
+                return BadRequest(userId);
+
+            var timeOffPending = await _timeOff.GetPendingApprovalTimeOffsAsync(userId);
+            return Ok(timeOffPending);
+        }
+
+        [HttpGet("PendingFinish")]
+        public async Task<IActionResult> PendingFinish()
+        {
+            var timeOffPending = await _timeOff.GetPendingFinishTimeOffsAsync();
+            return Ok(timeOffPending);
+        }
+
         //[HttpGet("{id}")]
         //public async Task<IActionResult> Get(Guid id)
         //{

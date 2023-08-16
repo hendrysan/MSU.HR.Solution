@@ -18,7 +18,6 @@ namespace MSU.HR.WebApi.Controllers
     {
         private readonly UserManager<AspNetUser> _userManager;
         private readonly IToken _token;
-        private readonly ILogError _logError;
         private readonly IUser _user;
         private readonly IEmployee _employee;
         //private readonly DatabaseContext _context;
@@ -26,16 +25,31 @@ namespace MSU.HR.WebApi.Controllers
         private readonly IConfiguration _configuration;
         private readonly string loginProvider = "bearer";
 
-        public AuthController(ILogger<AuthController> logger, IConfiguration configuration, UserManager<AspNetUser> userManager, IToken token, ILogError logError, IUser user, IEmployee employee)
+        public AuthController(ILogger<AuthController> logger, IConfiguration configuration, UserManager<AspNetUser> userManager, IToken token, IUser user, IEmployee employee)
         {
             _token = token;
             _logger = logger;
             _configuration = configuration;
             _userManager = userManager;
             //_context = context;
-            _logError = logError;
             _user = user;
             _employee = employee;
+        }
+
+        [HttpPost]
+        [Route("TestError")]
+        public async Task<IActionResult> TestError([FromBody] BankRequest request)
+        {
+            //var identity = new UserIdentityModel(User.Identity as ClaimsIdentity);
+            //var user = await _user.GetProfile();//_context.Users.Include(r => r.Role).Include(c => c.Corporate).Include(e => e.Employee).FirstOrDefault(u => u.Id == identity.Id.ToString());
+            //if (user is null) return Unauthorized("silahkan login");
+
+            //return Ok(user);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Unauthorized();
         }
 
         [HttpPost]
@@ -45,7 +59,7 @@ namespace MSU.HR.WebApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-           
+
 
             var user = await _user.GetProfile(code: request.CodeNIK);
             if (user is null)

@@ -130,7 +130,7 @@ builder.Services.Configure<SecurityStampValidatorOptions>(options =>
 
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddScoped<IResponse, ResponseRepository>();
+//builder.Services.AddScoped<IResponse, ResponseRepository>();
 builder.Services.AddScoped<IUser, UserRepository>();
 builder.Services.AddScoped<IToken, TokenRepository>();
 builder.Services.AddScoped<ILogError, LogErrorRepository>();
