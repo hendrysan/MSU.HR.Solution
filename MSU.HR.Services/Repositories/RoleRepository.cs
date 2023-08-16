@@ -66,7 +66,7 @@ namespace MSU.HR.Services.Repositories
             {
                 var entity = await _context.Roles.Where(i => i.IsActive == true && i.Id == id).FirstOrDefaultAsync();
                 if (entity == null)
-                    return 0;
+                    throw new Exception("badrequest Data Not found");
 
                 entity.IsActive = false;
                 entity.LastUpdatedBy = userIdentity.Id.ToString();
@@ -158,7 +158,7 @@ namespace MSU.HR.Services.Repositories
             {
                 var find = await _context.Roles.Where(i => i.IsActive == true && i.Id == id).FirstOrDefaultAsync();
                 if (find == null)
-                    return 0;
+                    throw new Exception("badrequest Data Not found");
 
                 entity.LastUpdatedBy = userIdentity.Id.ToString();
                 entity.LastUpdatedDate = DateTime.Now;

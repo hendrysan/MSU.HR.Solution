@@ -44,7 +44,7 @@ namespace MSU.HR.Services.Repositories
         {
             var user = await _context.Users.Where(i => i.IsActive == true && i.Id == userId.ToString()).FirstOrDefaultAsync();
             if (user == null)
-                return 0;
+                throw new Exception("badrequest Data Not Found");
 
             user.PasswordHash = hasPassword;
             user.LastModifiedBy = userIdentity.Id.ToString();
@@ -59,13 +59,13 @@ namespace MSU.HR.Services.Repositories
                 var userNotConnected = await _context.Users.Where(i => i.IsActive == true && i.IsConnected == false).ToListAsync();
 
                 if (userNotConnected.Count == 0)
-                    return 0;
+                    throw new Exception("badrequest All User is Connected");
 
                 var codes = userNotConnected.Select(i => i.Code).ToList();
                 var employees = await _context.Employees.Where(i => i.IsActive && codes.Contains(i.Code)).ToListAsync();
 
                 if (employees.Count == 0)
-                    return 0;
+                    throw new Exception("badrequest Employee Code Not Found [" + string.Join(",", codes) + "]");
 
                 var corporate = await _context.Corporates.FirstOrDefaultAsync();
                 var role = await _context.Roles.Where(i => i.IsDefault && i.IsActive).FirstOrDefaultAsync();
@@ -73,8 +73,12 @@ namespace MSU.HR.Services.Repositories
                 foreach (var user in userNotConnected)
                 {
                     user.Employee = employees.Where(i => i.Code == user.Code).FirstOrDefault();
-                    user.Role = role;
-                    user.Corporate = corporate;
+                    if (user.Role == null)
+                        user.Role = role;
+
+                    if (user.Corporate == null)
+                        user.Corporate = corporate;
+
                     user.IsConnected = true;
                     await _context.SaveChangesAsync();
                 }
@@ -135,13 +139,13 @@ namespace MSU.HR.Services.Repositories
                     .Include(i => i.Employee)
                     .FirstOrDefaultAsync();
                 if (user == null)
-                    return 0;
+                    throw new Exception("badrequest Data User Not Found");
 
                 if (user.Employee == null)
                 {
                     var employees = await _context.Employees.Where(i => i.IsActive && i.Code == code).FirstOrDefaultAsync();
                     if (employees == null)
-                        return 0;
+                        throw new Exception("badrequest Data Employee not match");
 
                     user.Employee = employees;
                     user.IsConnected = true;

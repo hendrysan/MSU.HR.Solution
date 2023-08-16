@@ -18,15 +18,17 @@ namespace MSU.HR.Services.Repositories
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly UserIdentityModel userIdentity;
         private readonly ILogError _logError;
-        private readonly IResponse _response;
+        private readonly ErrorHandler errorHandler;
+        //private readonly IResponse _response;
 
-        public BankRepository(DatabaseContext context, IHttpContextAccessor httpContextAccessor, ILogError logError, IResponse response)
+        public BankRepository(DatabaseContext context, IHttpContextAccessor httpContextAccessor, ILogError logError)
         {
             _context = context;
             _httpContextAccessor = httpContextAccessor;
             userIdentity = new UserIdentityModel(_httpContextAccessor.HttpContext.User.Identity as ClaimsIdentity);
             _logError = logError;
-            _response = response;
+            //_response = response;
+            errorHandler = new ErrorHandler();
         }
 
         public async Task<bool> CheckCodeExistsAsync(string code)
@@ -40,8 +42,8 @@ namespace MSU.HR.Services.Repositories
             catch (Exception ex)
             {
                 await _logError.SaveAsync(ex, JsonSerializer.Serialize(code));
-                await _response.Error(ex.Message, code);
-                //throw new Exception("Bank CheckCodeExistsAsync Error : " + ex.Message);
+
+                throw new Exception("Bank CheckCodeExistsAsync Error : " + ex.Message);
             }
         }
 
@@ -70,7 +72,8 @@ namespace MSU.HR.Services.Repositories
             {
                 var entity = await _context.Banks.Where(i => i.IsActive == true && i.Id == id).FirstOrDefaultAsync();
                 if (entity == null)
-                    return 0;
+                    throw new Exception("badrequest Data Not found");
+
 
                 entity.IsActive = false;
                 entity.LastUpdatedBy = userIdentity.Id.ToString();
@@ -164,7 +167,7 @@ namespace MSU.HR.Services.Repositories
             {
                 var find = await _context.Banks.Where(i => i.IsActive == true && i.Id == id).FirstOrDefaultAsync();
                 if (find == null)
-                    return 0;
+                    throw new Exception("badrequest Data Not found");
 
                 find.LastUpdatedBy = userIdentity.Id.ToString();
                 find.LastUpdatedDate = DateTime.Now;

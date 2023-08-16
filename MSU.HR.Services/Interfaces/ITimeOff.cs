@@ -16,7 +16,7 @@ namespace MSU.HR.Services.Interfaces
         Task<IEnumerable<TimeOff>?> GetTimeOffsAsync(Guid userId);
         Task<IEnumerable<TimeOff>?> GetPendingApprovalTimeOffsAsync(Guid userId);
         Task<IEnumerable<TimeOff>?> GetPendingFinishTimeOffsAsync();
-        Task<TimeOff> GetTimeOffDetailAsync(Guid userId, Guid timeOffId);
+        Task<TimeOff> GetTimeOffDetailAsync(Guid timeOffId);
         Task<IEnumerable<TimeOffHistory>?> GetTimeOffHistoriesAsync(Guid timeOffId);
     }
 }

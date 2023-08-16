@@ -128,7 +128,7 @@ namespace MSU.HR.Services.Repositories
             {
                 var entity = await _context.Employees.Where(i => i.IsActive == true && i.Id == id).FirstOrDefaultAsync();
                 if (entity == null)
-                    return 0;
+                    throw new Exception("badrequest Data Not found");
 
                 entity.IsActive = false;
                 entity.LastUpdatedBy = userIdentity.Id.ToString();
@@ -240,7 +240,7 @@ namespace MSU.HR.Services.Repositories
             {
                 var find = await _context.Employees.Where(i => i.IsActive == true && i.Id == id).FirstOrDefaultAsync();
                 if (find == null)
-                    return 0;
+                    throw new Exception("badrequest Data Not found");
 
                 var bank = await _bank.GetBankAsync(request.BankId);
                 var department = await _department.GetDepartmentAsync(request.DepartmentId);

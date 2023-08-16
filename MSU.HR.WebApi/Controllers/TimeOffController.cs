@@ -136,18 +136,15 @@ namespace MSU.HR.WebApi.Controllers
             return Ok(response);
         }
 
-        [HttpGet("Detail/{userId}/{timeOffId}")]
-        public async Task<IActionResult> Detail(Guid userId, Guid timeOffId)
+        [HttpGet("Detail/{timeOffId}")]
+        public async Task<IActionResult> Detail(Guid timeOffId)
         {
             if (timeOffId == Guid.Empty)
                 return BadRequest(timeOffId);
 
-            if (userId == Guid.Empty)
-                return BadRequest(userId);
-
             var response = new TimeOffDetailResponse();
 
-            var timeOff = await _timeOff.GetTimeOffDetailAsync(userId, timeOffId);
+            var timeOff = await _timeOff.GetTimeOffDetailAsync(timeOffId);
             var histories = await _timeOff.GetTimeOffHistoriesAsync(timeOffId);
             response.TimeOff = timeOff;
             response.TimeOffHistories = histories;

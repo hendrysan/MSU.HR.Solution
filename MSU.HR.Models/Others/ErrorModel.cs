@@ -16,5 +16,9 @@
         //{
         //    return new ErrorModel() { IsSuccess = false, Message = message, ErrorCode = errorCode };
         //}
+        //public static ErrorModel BadRequest(string message, object data,  int errorCode = 400)
+        //{
+        //    return new ErrorModel() { IsSuccess = false, Message = message, ErrorCode = errorCode, Data = data };
+        //}
     }
 }

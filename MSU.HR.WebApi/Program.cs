@@ -1,5 +1,7 @@
+using GlobalErrorHandling.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MSU.HR.Contexts;
@@ -7,7 +9,6 @@ using MSU.HR.Models.Entities;
 using MSU.HR.Models.Others;
 using MSU.HR.Services.Interfaces;
 using MSU.HR.Services.Repositories;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -21,6 +22,23 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.PropertyNamingPolicy = null;
 });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+builder.Services.AddMvcCore().ConfigureApiBehaviorOptions(options =>
+    {
+        options.InvalidModelStateResponseFactory = context =>
+        {
+            //var message = context
+
+            var result = new ErrorModel()
+            {
+                IsSuccess = false,
+                ErrorCode = 400,
+                Message = "Bad Request",
+                Data = context.ModelState.Values.SelectMany(x => x.Errors.Select(p => p.ErrorMessage)).ToList()
+            };
+            return new BadRequestObjectResult(result);
+        };
+    });
 
 
 builder.Services.AddEndpointsApiExplorer();
@@ -154,11 +172,13 @@ builder.Services.AddScoped<ITimeOff, TimeOffRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SecureSwagger v1"));
-}
+//if (app.Environment.IsDevelopment())
+//{
+app.UseSwagger();
+app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SecureSwagger v1"));
+//}
+
+app.ConfigureExceptionHandler();
 
 app.UseHttpsRedirection();
 
