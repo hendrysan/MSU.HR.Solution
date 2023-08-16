@@ -63,12 +63,12 @@ namespace MSU.HR.Services.Repositories
                     throw new Exception("badrequest StatusId Invalid");
 
                 var user = await _context.Employees.Where(i => i.Code == userIdentity.Code).FirstOrDefaultAsync();
-                if (trx.ApprovedBy != user.Id)
+                if (trx.ApprovedBy != user.Code)
                     throw new Exception("badrequest User Invalid");
 
                 var status = StatusTimeOffEnum.APPROVED;
                 trx.ApprovedDate = DateTime.Now;
-                trx.ApprovedBy = userIdentity.Id;
+                //trx.ApprovedBy = userIdentity.Code;
                 trx.ApprovedRemarks = remarks;
                 trx.StatusId = status.ToString();
                 var result = await _context.SaveChangesAsync();
@@ -166,7 +166,7 @@ namespace MSU.HR.Services.Repositories
                 .Include(i => i.Department)
                 .Include(i => i.Section)
                 .Include(i => i.Grade)
-                .Where(i => i.Department == department && i.Section == section && i.IsActive)
+                .Where(i => i.Department == department && i.Section == section && i.IsActive && i.Grade != null)
                 .ToListAsync();
 
             if (superiors.Count == 0)
@@ -189,15 +189,15 @@ namespace MSU.HR.Services.Repositories
                 if (trx == null)
                     throw new Exception("badrequest Data Not Found");
 
-                if(trx.StatusId != StatusTimeOffEnum.REQUEST.ToString())
+                if (trx.StatusId != StatusTimeOffEnum.REQUEST.ToString())
                     throw new Exception("badrequest Status Transaction Invalid");
 
-                if (trx.ApprovedBy != userIdentity.Id)
+                if (trx.ApprovedBy != userIdentity.Code)
                     throw new Exception("badrequest User Code Invalid");
 
                 var status = StatusTimeOffEnum.REJECT;
                 trx.ApprovedDate = DateTime.Now;
-                trx.ApprovedBy = userIdentity.Id;
+                //trx.ApprovedBy = userIdentity.Code;
                 trx.ApprovedRemarks = remarks;
                 trx.StatusId = status.ToString();
                 var result = await _context.SaveChangesAsync();
@@ -226,6 +226,7 @@ namespace MSU.HR.Services.Repositories
                 TimeOff trx = new TimeOff();
                 trx.Id = Guid.NewGuid();
                 trx.UserId = userIdentity.Id;
+                trx.UserFullName = userIdentity.FullName;
                 trx.Reason = reason;
                 trx.TemporaryAnnualLeaveAllowance = request.TemporaryAnnualLeaveAllowance;
                 trx.StartDate = request.StartDate;
@@ -233,7 +234,7 @@ namespace MSU.HR.Services.Repositories
                 trx.Notes = request.Notes;
                 trx.Taken = request.Taken;
                 trx.StatusId = status.ToString();
-                trx.ApprovedBy = approvedBy == null ? Guid.Empty : approvedBy.Id;
+                trx.ApprovedBy = approvedBy == null ? string.Empty : approvedBy.Code;
                 trx.CreatedDate = DateTime.Now;
                 _context.TimeOffs.Add(trx);
                 var result = await _context.SaveChangesAsync();
@@ -264,7 +265,7 @@ namespace MSU.HR.Services.Repositories
                 trx.Notes = "Expired Submit by System ";
                 trx.Taken = taken.Total;
                 trx.StatusId = status.ToString();
-                trx.ApprovedBy = Guid.Empty;
+                trx.ApprovedBy = string.Empty;
                 trx.CreatedDate = DateTime.Now;
                 _context.TimeOffs.Add(trx);
                 var result = await _context.SaveChangesAsync();
@@ -327,9 +328,9 @@ namespace MSU.HR.Services.Repositories
                     throw new Exception("badrequest User Department Not HRD");
 
                 var status = StatusTimeOffEnum.FINISH;
-                trx.ApprovedDate = DateTime.Now;
-                trx.ApprovedBy = userIdentity.Id;
-                trx.ApprovedRemarks = string.Empty;
+                //trx.ApprovedDate = DateTime.Now;
+                //trx.ApprovedBy = userIdentity.Id;
+                //trx.ApprovedRemarks = string.Empty;
                 trx.StatusId = status.ToString();
                 var result = await _context.SaveChangesAsync();
                 await SaveHistory(timeOffId, string.Empty, status);
@@ -342,18 +343,18 @@ namespace MSU.HR.Services.Repositories
             }
         }
 
-        public async Task<IEnumerable<TimeOff>?> GetPendingApprovalTimeOffsAsync(Guid userId)
+        public async Task<IEnumerable<TimeOff>?> GetPendingApprovalTimeOffsAsync(string code)
         {
             try
             {
                 var status = StatusTimeOffEnum.REQUEST.ToString();
                 //var trx = await _context.TimeOffs.Where(i => i.ApprovedBy == userId && i.StatusId == status).Include(r => r.Reason).ToListAsync();
-                var trx = await _context.TimeOffs.Where(i => i.StatusId == status).Include(r => r.Reason).ToListAsync();
+                var trx = await _context.TimeOffs.Where(i => i.StatusId == status && i.ApprovedBy == code).Include(r => r.Reason).ToListAsync();
                 return trx.OrderByDescending(i => i.CreatedDate).ToList();
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(userId));
+                await _logError.SaveAsync(ex, JsonSerializer.Serialize(code));
                 throw new Exception("Time Off GetPendingApprovalTimeOffsAsync Error : " + ex.Message);
             }
         }

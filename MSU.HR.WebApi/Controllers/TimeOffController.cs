@@ -153,13 +153,13 @@ namespace MSU.HR.WebApi.Controllers
             return Ok(response);
         }
 
-        [HttpGet("PendingApproval/{userId}")]
-        public async Task<IActionResult> PendingApproval(Guid userId)
+        [HttpGet("PendingApproval/{userCode}")]
+        public async Task<IActionResult> PendingApproval(string userCode)
         {
-            if (userId == Guid.Empty)
-                return BadRequest(userId);
+            if (string.IsNullOrEmpty(userCode))
+                return BadRequest(userCode);
 
-            var timeOffPending = await _timeOff.GetPendingApprovalTimeOffsAsync(userId);
+            var timeOffPending = await _timeOff.GetPendingApprovalTimeOffsAsync(userCode);
             return Ok(timeOffPending);
         }
 
