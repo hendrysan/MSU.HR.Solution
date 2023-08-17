@@ -1,4 +1,3 @@
-using GlobalErrorHandling.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +8,7 @@ using MSU.HR.Models.Entities;
 using MSU.HR.Models.Others;
 using MSU.HR.Services.Interfaces;
 using MSU.HR.Services.Repositories;
+using MSU.HR.WebApi.Extensions;
 using System.Text;
 using System.Text.Json.Serialization;
 

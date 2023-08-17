@@ -3,20 +3,22 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSU.HR.WebApi", "MSU.HR.WebApi\MSU.HR.WebApi.csproj", "{9A389839-E284-4FA6-8758-6FFF91D096E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MSU.HR.WebApi", "MSU.HR.WebApi\MSU.HR.WebApi.csproj", "{9A389839-E284-4FA6-8758-6FFF91D096E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSU.HR.Services", "MSU.HR.Services\MSU.HR.Services.csproj", "{00D125D0-8F8F-4BCB-96D3-D6134EEC5A64}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MSU.HR.Services", "MSU.HR.Services\MSU.HR.Services.csproj", "{00D125D0-8F8F-4BCB-96D3-D6134EEC5A64}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSU.HR.Models", "MSU.HR.Models\MSU.HR.Models.csproj", "{5BA01F96-9A04-4563-AB17-B550DFE955AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MSU.HR.Models", "MSU.HR.Models\MSU.HR.Models.csproj", "{5BA01F96-9A04-4563-AB17-B550DFE955AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSU.HR.Commons", "MSU.HR.Commons\MSU.HR.Commons.csproj", "{15016265-C46C-4597-A83F-DAE16F6DCFBF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MSU.HR.Commons", "MSU.HR.Commons\MSU.HR.Commons.csproj", "{15016265-C46C-4597-A83F-DAE16F6DCFBF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSU.HR.Contexts", "MSU.HR.Contexts\MSU.HR.Contexts.csproj", "{50FFBCA0-7A80-458A-9135-D4478D337717}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MSU.HR.Contexts", "MSU.HR.Contexts\MSU.HR.Contexts.csproj", "{50FFBCA0-7A80-458A-9135-D4478D337717}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0B72715A-449F-4819-87FB-5DBDF0E774B2}"
 	ProjectSection(SolutionItems) = preProject
 		catatan.txt = catatan.txt
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSU.HR.WebClient", "MSU.HR.WebClient\MSU.HR.WebClient.csproj", "{827F7B9F-CC67-4F6F-B1E6-6BB742A100EC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,6 +46,10 @@ Global
 		{50FFBCA0-7A80-458A-9135-D4478D337717}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{50FFBCA0-7A80-458A-9135-D4478D337717}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{50FFBCA0-7A80-458A-9135-D4478D337717}.Release|Any CPU.Build.0 = Release|Any CPU
+		{827F7B9F-CC67-4F6F-B1E6-6BB742A100EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{827F7B9F-CC67-4F6F-B1E6-6BB742A100EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{827F7B9F-CC67-4F6F-B1E6-6BB742A100EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{827F7B9F-CC67-4F6F-B1E6-6BB742A100EC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
