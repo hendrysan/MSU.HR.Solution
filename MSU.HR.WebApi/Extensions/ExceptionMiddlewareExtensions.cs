@@ -2,7 +2,7 @@
 using MSU.HR.Models.Others;
 using System.Net;
 
-namespace GlobalErrorHandling.Extensions
+namespace MSU.HR.WebApi.Extensions
 {
     public static class ExceptionMiddlewareExtensions
     {
@@ -27,7 +27,7 @@ namespace GlobalErrorHandling.Extensions
                             {
                                 IsSuccess = false,
                                 ErrorCode = context.Response.StatusCode,
-                                Message = contextFeature.Error.Message.Replace("badrequest", "").Trim()
+                                Message = contextFeature.Error.Message.Replace("badrequest", string.Empty).Trim()
                             });
                         }
                         else

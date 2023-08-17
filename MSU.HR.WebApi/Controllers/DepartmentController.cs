@@ -70,6 +70,7 @@ namespace MSU.HR.WebApi.Controllers
             return Ok(response);
         }
 
+        /*
         [HttpPost]
         public async Task<ActionResult<PostResponse>> Post([FromBody] DepartmentRequest request)
         {
@@ -103,7 +104,6 @@ namespace MSU.HR.WebApi.Controllers
                     Message = ""
                 });
         }
-
 
         [HttpPut("{id}")]
         public async Task<ActionResult<PostResponse>> Put(Guid id, [FromBody] DepartmentRequest request)
@@ -158,5 +158,7 @@ namespace MSU.HR.WebApi.Controllers
                 });
             }
         }
+    
+    */
     }
 }

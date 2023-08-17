@@ -70,6 +70,7 @@ namespace MSU.HR.WebApi.Controllers
             return Ok(response);
         }
 
+        /*
         [HttpPost]
         public async Task<ActionResult<PostResponse>> Post([FromBody] PTKPRequest request)
         {
@@ -162,5 +163,6 @@ namespace MSU.HR.WebApi.Controllers
                 });
             }
         }
+    */
     }
 }

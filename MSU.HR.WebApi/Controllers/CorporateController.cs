@@ -69,7 +69,7 @@ namespace MSU.HR.WebApi.Controllers
 
             return Ok(response);
         }
-
+        /*
         [HttpPost]
         public async Task<ActionResult<PostResponse>> Post([FromBody] CorporateRequest request)
         {
@@ -188,5 +188,6 @@ namespace MSU.HR.WebApi.Controllers
                 });
             }
         }
+    */
     }
 }

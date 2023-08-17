@@ -70,6 +70,7 @@ namespace MSU.HR.WebApi.Controllers
             return Ok(response);
         }
 
+        /*
         [HttpPost]
         public async Task<ActionResult<PostResponse>> Post([FromBody] SectionRequest request)
         {
@@ -146,5 +147,6 @@ namespace MSU.HR.WebApi.Controllers
                 });
             }
         }
+   */
     }
 }
