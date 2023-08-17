@@ -10,6 +10,20 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.4" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MSU.HR.Commons\MSU.HR.Commons.csproj" />
+    <ProjectReference Include="..\MSU.HR.Contexts\MSU.HR.Contexts.csproj" />
+    <ProjectReference Include="..\MSU.HR.Models\MSU.HR.Models.csproj" />
+    <ProjectReference Include="..\MSU.HR.Services\MSU.HR.Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\assets\js\editor\ckeditor\adapters\" />
+    <Folder Include="wwwroot\assets\js\time-picker\" />
+    <Folder Include="wwwroot\assets\js\timeline\timeline-v-2\" />
   </ItemGroup>
 
 </Project>

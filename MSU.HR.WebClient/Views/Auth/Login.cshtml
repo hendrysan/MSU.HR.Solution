@@ -1,0 +1,44 @@
+﻿@using MSU.HR.Models.Requests;
+@model LoginRequest;
+@{
+    Layout = "_LayoutLogin";
+}
+
+
+<div>
+    <div>
+        <a class="logo" href="#">
+            <img class="img-fluid for-light" src="https://www.mitrasolutech.com/mitrasolutech.com/payroll/image/logo.png" alt="looginpage">
+        </a>
+    </div>
+    <div class="login-main">
+        <form class="theme-form" method="post" asp-controller="Auth" asp-action="Login" needs-validation asp-route-returnurl="@ViewData["returnUrl"]">
+            <h4>Sign in to account</h4>
+            <p>Enter your Identity & password to login</p>
+
+
+            <div class="form-group">
+                <label class="col-form-label">ID Identity</label>
+                <input class="form-control" type="text" placeholder="123456789" asp-for="CodeNIK">
+            </div>
+            <span asp-validation-for="CodeNIK" class="text-danger"></span>
+            <div class="form-group">
+                <label class="col-form-label">Password</label>
+                <div class="form-input position-relative">
+                    <input class="form-control" type="password" placeholder="*********" asp-for="Password">
+                    <div class="show-hide">
+                        <span class="show"></span>
+                    </div>
+                </div>
+            </div>
+            <span asp-validation-for="Password" class="text-danger"></span>
+            <div class="form-group mb-0">
+                <a class="link" href="#">Forgot password?</a>
+                <div class="text-end mt-3">
+                    <input class="btn btn-primary btn-block w-100" type="submit" value="Login" />
+                </div>
+            </div>
+            <p class="mt-4 mb-0 text-center">Don't have account?<a class="ms-2" href="#">Create Account</a></p>
+        </form>
+    </div>
+</div>
