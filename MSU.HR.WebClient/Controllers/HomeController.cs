@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MSU.HR.Models.Others;
 using MSU.HR.WebClient.Models;
 using System.Diagnostics;
 
@@ -18,10 +19,19 @@ namespace MSU.HR.WebClient.Controllers
         //[Authorize(Roles = "Admin, User")]
         public IActionResult Index()
         {
+            ViewBag.PageTitle = "Home";
+            ViewBag.BreadcrumbItems = new List<BreadcrumbItemModel>();
+
             return View();
         }
 
         public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
+        public IActionResult Maintenance()
         {
             return View();
         }

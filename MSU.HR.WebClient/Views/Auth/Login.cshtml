@@ -3,7 +3,30 @@
 @{
     Layout = "_LayoutLogin";
 }
+@section Styles {
+    <style>
+        .field-validation-error {
+            color: red;
+        }
 
+        .field-validation-valid {
+            display: none;
+        }
+
+        input.input-validation-error {
+            border: 1px solid red;
+        }
+
+        .validation-summary-errors {
+            color: red;
+            font-size: 1.1em;
+        }
+
+        .validation-summary-valid {
+            display: none;
+        }
+    </style>
+}
 
 <div>
     <div>
@@ -16,16 +39,19 @@
             <h4>Sign in to account</h4>
             <p>Enter your Identity & password to login</p>
 
-            @Html.ValidationSummary(true, "", new { @class = "validation-summary-errors" })
+            @* @Html.ValidationSummary(true, "", new { @class = "validation-summary-errors" }) *@
+            @Html.AntiForgeryToken()
+            @* <div asp-validation-summary="All"></div> *@
+
             <div class="form-group">
                 <label class="col-form-label">ID Identity</label>
-                <input class="form-control" type="text" placeholder="123456789" asp-for="CodeNIK">
+                @Html.TextBoxFor(m => m.CodeNIK, new { @class = "form-control", @type = "text", @placeholder = "123456789", @autofocus="autofocus" })
             </div>
             <span asp-validation-for="CodeNIK" class="text-danger"></span>
             <div class="form-group">
                 <label class="col-form-label">Password</label>
                 <div class="form-input position-relative">
-                    <input class="form-control" type="password" asp-for="Password" id="passInput">
+                    @Html.TextBoxFor(m => m.Password, new { @class = "form-control", @type = "password", @id = "passInput" })
                     <div class="show-hide">
                         <span class="show" id="showPass"></span>
                     </div>

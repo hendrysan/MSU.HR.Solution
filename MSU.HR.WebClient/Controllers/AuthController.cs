@@ -33,10 +33,13 @@ namespace MSU.HR.WebClient.Controllers
         {
             ViewData["returnUrl"] = returnUrl;
             var model = new LoginRequest();
+            model.CodeNIK = "123456789";
+            model.Password = "123456789";
             return View(model);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> LoginAsync(LoginRequest request)
         {
             if (!ModelState.IsValid)
@@ -48,21 +51,21 @@ namespace MSU.HR.WebClient.Controllers
             var user = await _user.GetProfile(code: request.CodeNIK);
             if (user is null)
             {
-                ModelState.AddModelError("Code", "Invalid login attempt");
+                ModelState.AddModelError("CodeNIK", "Code Not Found");
                 return View(request);
             }
 
             var managedUser = await _userManager.FindByEmailAsync(email: user.Email);
             if (managedUser is null)
             {
-                ModelState.AddModelError("UserManager", "Invalid login attempt");
+                ModelState.AddModelError("CodeNIK", "User Undefine");
                 return View(request);
             }
 
             var isPasswordValid = await _userManager.CheckPasswordAsync(managedUser, request.Password);
             if (!isPasswordValid)
             {
-                ModelState.AddModelError("Password", "Invalid login attempt");
+                ModelState.AddModelError("Password", "Password not Match");
                 return View(request);
             }
 
@@ -80,15 +83,16 @@ namespace MSU.HR.WebClient.Controllers
 
             var principal = new ClaimsPrincipal(identity);
 
-            var login = HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+            string? returnUrl = HttpContext.Request.Query["returnUrl"];
+            return Redirect(returnUrl ?? "/");
 
-            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]
-        public IActionResult Logout()
+        public async Task<IActionResult> LogoutAsync()
         {
-            var login = HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login");
         }
     }

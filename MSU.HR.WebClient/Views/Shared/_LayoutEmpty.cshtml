@@ -1,6 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-<head>   
+<head>
 
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -32,20 +32,10 @@
     <link id="color" rel="stylesheet" href="~/assets/css/color-1.css" media="screen">
     <!-- Responsive css-->
     <link rel="stylesheet" type="text/css" href="~/assets/css/responsive.css">
-
     @await RenderSectionAsync("Styles", required: false)
-
 </head>
 <body>
-    <div class="container-fluid p-0">
-        <div class="row m-0">
-            <div class="col-12 p-0">
-                <div class="login-card login-dark">
-                    @RenderBody()
-                </div>
-            </div>
-        </div>
-    </div>
+    @RenderBody()
 
     <!-- latest jquery-->
     <script src="~/assets/js/jquery.min.js"></script>
