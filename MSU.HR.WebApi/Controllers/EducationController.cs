@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MSU.HR.Models.Entities;
 using MSU.HR.Models.Others;
-using MSU.HR.Models.Requests;
-using MSU.HR.Models.Responses;
 using MSU.HR.Services.Interfaces;
 
 namespace MSU.HR.WebApi.Controllers

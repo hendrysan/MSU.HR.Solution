@@ -19,4 +19,8 @@
     <ProjectReference Include="..\MSU.HR.Models\MSU.HR.Models.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ClientRepositories\" />
+  </ItemGroup>
+
 </Project>

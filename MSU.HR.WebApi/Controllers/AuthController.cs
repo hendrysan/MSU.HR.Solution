@@ -62,8 +62,6 @@ namespace MSU.HR.WebApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-
-
             var user = await _user.GetProfile(code: request.CodeNIK);
             if (user is null)
                 return Unauthorized(new ErrorModel()

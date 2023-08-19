@@ -15,6 +15,7 @@ namespace MSU.HR.WebClient.Controllers
             _logger = logger;
         }
 
+        //[Authorize(Roles = "Admin, User")]
         public IActionResult Index()
         {
             return View();

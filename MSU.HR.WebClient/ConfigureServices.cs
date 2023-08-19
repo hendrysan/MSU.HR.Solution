@@ -36,12 +36,25 @@ namespace MSU.HR.WebClient
 
 
             services.AddMvc();
-            //services.AddHttpContextAccessor();
-            //builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            //services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddHttpContextAccessor();
+                        
+            services.AddScoped<ILogError, LogErrorRepository>();
+            services.AddScoped<IToken, TokenRepository>();
+            services.AddScoped<IUser, UserRepository>();
+            services.AddScoped<ICorporate, CorporateRepository>();
+            services.AddScoped<IBank, BankRepository>();
+            services.AddScoped<IDepartment, DepartmentRepository>();
+            services.AddScoped<IEducation, EducationRepository>();
+            services.AddScoped<IGrade, GradeRepository>();
+            services.AddScoped<IJob, JobRepository>();
+            services.AddScoped<IReason, ReasonRepository>();
+            services.AddScoped<ISection, SectionRepository>();
+            services.AddScoped<ITypeEmployee, TypeEmployeeRepository>();
+            services.AddScoped<IPTKP, PTKPRepository>();
+            services.AddScoped<IRole, RoleRepository>();
+            services.AddScoped<IEmployee, EmployeeRepository>();
 
-            //services.AddScoped<IUser, UserRepository>();
-
+            services.AddScoped<ITimeOff, TimeOffRepository>();
 
             return services;
         }
