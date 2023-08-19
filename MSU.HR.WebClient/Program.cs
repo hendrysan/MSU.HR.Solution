@@ -2,6 +2,7 @@ using MSU.HR.Contexts;
 using MSU.HR.Models.Entities;
 using MSU.HR.Services.Interfaces;
 using MSU.HR.Services.Repositories;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,10 +33,12 @@ builder.Services.AddAuthentication()
          });
 //.ConfigureApplicationCookie(options => options.LoginPath = "/Auth/Login");
 
+builder.Services.AddMvc();
+//builder.Services.AddHttpContextAccessor();
+//builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-builder.Services.AddHttpContextAccessor();
-
-//builder.Services.AddScoped<IUser, UserRepository>();
+builder.Services.AddScoped<IUser, UserRepository>();
 
 var app = builder.Build();
 
