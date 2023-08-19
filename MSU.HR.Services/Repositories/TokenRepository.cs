@@ -1,20 +1,40 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using MSU.HR.Models.Entities;
 using MSU.HR.Services.Interfaces;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace MSU.HR.Services.Repositories
 {
     public class TokenRepository : IToken
     {
-        private readonly int ExpirationMinutes = 60;
+        private readonly IConfiguration _configuration;
+        //private readonly int ExpirationMinutes = 60;
 
-        public string CreateToken(AspNetUser user, Corporate? corporate, Role? role, Employee? employee)
+        public TokenRepository(IConfiguration configuration)
         {
-            var expiration = DateTime.Now.AddMinutes(ExpirationMinutes);
+            _configuration = configuration;
+        }
+
+        public DateTime GetRefreshTokenExpiryTime()
+        {
+            int expirationMinutes = Convert.ToInt32(_configuration.GetSection("Jwt:RefreshTokenExpirationMinutes").Value);
+            return DateTime.Now.AddMinutes(expirationMinutes);
+        }
+
+        //public DateTime GetRefreshTokenExpiryDay()
+        //{
+        //    int expirationDays = Convert.ToInt32(_configuration.GetSection("Jwt:RefreshTokenValidityInDays").Value);
+        //    return DateTime.Now.AddDays(expirationDays);
+        //}
+
+        public string CreateToken(AspNetUser user, Corporate? corporate, Role? role, Employee? employee, DateTime expiryTime)
+        {
+            var expiration = expiryTime;
             var token = CreateJwtToken(
                 CreateClaims(user, corporate, role, employee),
                 CreateSigningCredentials(),
@@ -67,15 +87,41 @@ namespace MSU.HR.Services.Repositories
             }
         }
 
-        private static SigningCredentials CreateSigningCredentials()
+        private SigningCredentials CreateSigningCredentials()
         {
             return new SigningCredentials(
                 new SymmetricSecurityKey(
-                    Encoding.UTF8.GetBytes("*&^!@#$%@!SomethingSecret!@%$#@!^&*")
+                    Encoding.UTF8.GetBytes(_configuration.GetSection("JWT:Secret").Value)
                 ),
                 SecurityAlgorithms.HmacSha256
             );
         }
 
+        public ClaimsPrincipal? GetPrincipalFromExpiredToken(string? token)
+        {
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateAudience = false,
+                ValidateIssuer = false,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"])),
+                ValidateLifetime = false
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
+            if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+                throw new SecurityTokenException("Invalid token");
+
+            return principal;
+        }
+
+        public string GenerateRefreshToken()
+        {
+            var randomNumber = new byte[64];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+            return Convert.ToBase64String(randomNumber);
+        }
     }
 }

@@ -27,5 +27,8 @@ namespace MSU.HR.Models.Entities
         public Employee? Employee { get; set; }
 
         public bool IsConnected { get; set; }
+
+        public string? RefreshToken { get; set; }
+        public DateTime? RefreshTokenExpiryTime { get; set; }
     }
 }

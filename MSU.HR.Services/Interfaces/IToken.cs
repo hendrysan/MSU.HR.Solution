@@ -5,7 +5,11 @@ namespace MSU.HR.Services.Interfaces
 {
     public interface IToken
     {
-        string CreateToken(AspNetUser user, Corporate? corporate, Role? role, Employee? employee);
+        DateTime GetRefreshTokenExpiryTime();
+        //DateTime GetRefreshTokenExpiryDay();
+        string CreateToken(AspNetUser user, Corporate? corporate, Role? role, Employee? employee, DateTime expiryTime);
         List<Claim> CreateClaims(AspNetUser user, Corporate? corporate, Role? role, Employee? employee);
+        ClaimsPrincipal? GetPrincipalFromExpiredToken(string? token);
+        string GenerateRefreshToken();
     }
 }

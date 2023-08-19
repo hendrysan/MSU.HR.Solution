@@ -42,8 +42,6 @@ namespace MSU.HR.Contexts
         {
             var connectionUsed = _configuration.GetSection("ConnectionUsed").Value.ToString().ToLower();
 
-
-
             if (connectionUsed == "mysql")
             {
                 string mySqlConnection = _configuration.GetConnectionString("MySQLConnection");
