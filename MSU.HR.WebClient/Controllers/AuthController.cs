@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MSU.HR.Contexts;
 using MSU.HR.Models.Requests;
 using MSU.HR.Services.Interfaces;
@@ -8,6 +9,14 @@ namespace MSU.HR.WebClient.Controllers
 {
     public class AuthController : Controller
     {
+        private readonly DatabaseContext _context;
+
+        public AuthController(DatabaseContext context)
+        {
+            _context = context;
+        }
+
+
         [HttpGet]
         public IActionResult Login(string returnUrl = "")
         {
@@ -17,7 +26,7 @@ namespace MSU.HR.WebClient.Controllers
         }
 
         [HttpPost]
-        public IActionResult Login(LoginRequest model)
+        public async Task<IActionResult> LoginAsync(LoginRequest model)
         {
             if (!ModelState.IsValid)
             {
@@ -25,7 +34,7 @@ namespace MSU.HR.WebClient.Controllers
                 return View(model);
             }
 
-            
+            var user = await _context.Users.Where(i=>i.Code== model.CodeNIK).FirstOrDefaultAsync();
 
             return RedirectToAction("Index", "Home");
         }

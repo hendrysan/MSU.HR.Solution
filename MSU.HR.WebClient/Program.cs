@@ -1,4 +1,5 @@
 using MSU.HR.Contexts;
+using MSU.HR.Models.Entities;
 using MSU.HR.Services.Interfaces;
 using MSU.HR.Services.Repositories;
 
@@ -9,6 +10,19 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<DatabaseContext>(options =>
 {
 });
+
+builder.Services
+    .AddIdentityCore<AspNetUser>(options =>
+    {
+        options.SignIn.RequireConfirmedAccount = false;
+        options.User.RequireUniqueEmail = true;
+        options.Password.RequireDigit = false;
+        options.Password.RequiredLength = 6;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequireUppercase = false;
+        options.Password.RequireLowercase = false;
+    })
+    .AddEntityFrameworkStores<DatabaseContext>();
 
 builder.Services.AddAuthentication()
          .AddCookie(options =>
