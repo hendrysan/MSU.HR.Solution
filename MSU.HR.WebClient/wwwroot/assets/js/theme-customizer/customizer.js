@@ -135,8 +135,10 @@
             "page-wrapper horizontal-wrapper " + boxed
           );
           $(".logo-wrapper")
-            .find("img")
-            .attr("src", "../assets/images/logo/logo.png");
+              .find("img")
+              .attr("src", "https://www.mitrasolutech.com/mitrasolutech.com/payroll/image/logo.png")
+              /*.attr("src", "../assets/images/logo/logo.png");*/
+
           localStorage.setItem("page-wrapper-cuba", "horizontal-wrapper");
           break;
         }

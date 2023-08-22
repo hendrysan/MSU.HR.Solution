@@ -83,6 +83,7 @@ namespace MSU.HR.WebClient.Controllers
 
             var principal = new ClaimsPrincipal(identity);
 
+
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
             string? returnUrl = HttpContext.Request.Query["returnUrl"];
             return Redirect(returnUrl ?? "/");
