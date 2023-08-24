@@ -81,6 +81,9 @@ chown -R user-ftp /var/www/*
 
 
 
+sudo ufw allow OpenSSH
+ sudo ufw reload
+
 
 Kill process
 
