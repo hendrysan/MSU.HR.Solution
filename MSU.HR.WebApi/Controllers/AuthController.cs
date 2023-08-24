@@ -179,7 +179,8 @@ namespace MSU.HR.WebApi.Controllers
                 RefreshToken = user.RefreshToken,//Guid.NewGuid().ToString(),
                 Role = login.Role,
                 UserId = login.UserId,
-                Username = login.Username
+                Username = login.Username,
+                RefreshTokenExpiryTime = user.RefreshTokenExpiryTime.Value,
             };
 
             return Ok(response);
