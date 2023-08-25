@@ -13,12 +13,9 @@
                     <h4>Remining Allowance Paid Leave : @Model.ReminingAllowance</h4>
                 </div>
                 <div class="ml-auto">
-                    <a href="" class="btn btn-primary">Request Paid Leave</a>
+                    <a href="@Url.Action("Create","PaidLeave")" class="btn btn-primary @(Model.ReminingAllowance.ToString() == "0" ? "disabled" : string.Empty)"> Request Paid Leave</a>
                 </div>
             </div>
-
-
-
         </div>
         <div>
             <div class="card-block row">
@@ -31,12 +28,12 @@
                                     <th scope="col">Date</th>
                                     <th scope="col">Taken</th>
                                     <th scope="col">Status</th>
-                                    <th scope="col">Approval Date</th>
+                                    <th scope="col">Approval</th>
                                     <th scope="col">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                
+
                                 @if (Model.TimeOffs?.Count() == 0)
                                 {
                                     <tr>
@@ -78,15 +75,15 @@
                                                     </span>
                                                 }
                                             </td>
-                                            <td>@i.ApprovedDate</td>
+                                            <td>
+                                                @i.
+                                            </td>
                                             <td>
                                                 <a href="#"> Show Detail</a>
                                             </td>
                                         </tr>
                                     }
                                 }
-
-
                             </tbody>
                         </table>
                     </div>

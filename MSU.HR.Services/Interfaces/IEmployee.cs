@@ -11,6 +11,7 @@ namespace MSU.HR.Services.Interfaces
         Task<IEnumerable<Employee>> GetEmployeesAsync();
         Task<Employee> GetEmployeeAsync(Guid id);
         Task<Employee?> GetEmployeeAsync(string code);
+        Task<Employee> GetEmployeeAsync();
         Task<IEnumerable<DropdownModel>> GetDropdownModelAsync();
         Task<int> CreateAsync(EmployeeRequest request);
         Task<int> UpdateAsync(Guid id, EmployeeRequest request);

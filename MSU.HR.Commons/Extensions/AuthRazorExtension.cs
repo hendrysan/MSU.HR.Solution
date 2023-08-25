@@ -10,6 +10,12 @@ namespace MSU.HR.Commons.Extensions
             return data ?? "GetUserId Error";
         }
 
+        public static string GetUserCode(this RazorPage page)
+        {
+            var data = page.User.Claims.FirstOrDefault(c => c.Type.Contains("Code")).Value;
+            return data ?? "GetUserCode Error";
+        }
+
         public static string GetUserFullName(this RazorPage page)
         {
             var data = page.User.Claims.FirstOrDefault(c => c.Type.Contains("FullName")).Value;

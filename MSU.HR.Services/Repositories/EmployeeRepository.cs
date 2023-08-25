@@ -166,6 +166,30 @@ namespace MSU.HR.Services.Repositories
             }
         }
 
+        public async Task<Employee> GetEmployeeAsync()
+        {
+            try
+            {
+                string code = userIdentity.Code;
+                var entity = await _context.Employees.Where(i => i.IsActive == true && i.Code == code)
+                    .Include(i => i.Bank)
+                    .Include(i => i.Department)
+                    .Include(i => i.Education)
+                    .Include(i => i.Grade)
+                    .Include(i => i.Job)
+                    .Include(i => i.PTKP)
+                    .Include(i => i.Section)
+                    .Include(i => i.TypeEmployee)
+                    .FirstOrDefaultAsync();
+                return entity;
+            }
+            catch (Exception ex)
+            {
+                await _logError.SaveAsync(ex, "");
+                throw new Exception("Employee Find Error : " + ex.Message);
+            }
+        }
+
         public async Task<EmployeePagination> GetEmployeesAsync(string search, PaginationModel pagination)
         {
             try

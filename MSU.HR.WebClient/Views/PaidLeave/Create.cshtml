@@ -1,0 +1,106 @@
+﻿@{
+    ViewData["Title"] = "Create Paid Leave Page";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+@model MSU.HR.Models.ViewModels.PaidLeaveCreateModel
+
+@section Styles{
+
+}
+
+<div class="col-sm-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <h4>Create Request Paid Leave</h4>
+                </div>
+                <div class="ml-auto">
+                    <a href="@Url.Action("Index","PaidLeave")"> Back to List</a>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="card-body">
+                <form class="needs-validation" method="post" asp-controller="PaidLeave" asp-action="Create">
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(i=>i.UserCode, htmlAttributes: new {Value = AuthRazorExtension.GetUserCode(this)})
+                    @Html.HiddenFor(i=>i.UserId, htmlAttributes: new {Value = AuthRazorExtension.GetUserId(this)})
+                    @Html.HiddenFor(i=>i.UserFullName, htmlAttributes: new {Value = AuthRazorExtension.GetUserFullName(this)})
+                    <div class="row">
+                        <div class="col-6">
+                            <h5>Personal Information</h5>
+                            <br />
+                            <div class="col-12">
+                                <label class="form-label" for="">Full Name</label>
+                                @Html.TextBoxFor(i=>i.EmployeeInfo.Name, new { @class = "form-control-plaintext disabled", @readonly = "readonly" })
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" for="">Department</label>
+                                @Html.TextBoxFor(i=>i.EmployeeInfo.Department.Name, new { @class = "form-control-plaintext disabled", @readonly = "readonly" })
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" for="">Section</label>
+                                @Html.TextBoxFor(i=>i.EmployeeInfo.Section.Name, new { @class = "form-control-plaintext disabled", @readonly = "readonly" })
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" for="">Leader</label>
+                                @Html.TextBoxFor(i=>i.SuperiorityInfo, new { @class = "form-control-plaintext disabled", @readonly = "readonly" })
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" for="">Remaining Allowance</label>
+                                @Html.TextBoxFor(i=>i.RemainingAllowance, new { @class = "form-control-plaintext disabled", @readonly = "readonly" })
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <h5>Request Information</h5>
+                            <br />
+                            <div class="col-12">
+                                <label class="form-label" for="">Reason</label>
+                                @Html.DropDownListFor(i=>i.ReasonId, Model.ReasonDropdown.Select(x=> new SelectListItem() {Value = x.Code, Text=x.Name}), "-- Reason List -- ", htmlAttributes: new { @class = "form-control selectpicker", data_live_search="true", @required=""})
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" for="">Start Date</label>
+                                @Html.TextBoxFor(i=>i.StartDate, htmlAttributes: new { @class = "form-control", @type="date",@required=""})
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label" for="">End Date</label>
+                                @Html.TextBoxFor(i=>i.EndDate, htmlAttributes: new { @class = "form-control", @type="date",@required=""})
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label" for="">Taken Days</label>
+                                <input class="form-control disabled" value="" readonly required="">
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label" for="">Notes</label>
+                                @Html.TextAreaFor(i=>i.Notes, 2,3, new { @class = "form-control"})
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between">
+                                <br />
+                                <div>
+                                </div>
+                                <div class="ml-auto">
+                                    <br />
+                                    <input class="btn btn-primary" type="submit" value="Submit" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+
+
+}
