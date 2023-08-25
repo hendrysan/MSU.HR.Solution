@@ -41,15 +41,17 @@ namespace MSU.HR.Contexts
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             var connectionUsed = _configuration.GetSection("ConnectionUsed").Value.ToString().ToLower();
+            string connectionString = "server=localhost; port=3306; database=dbpayroll; user=root; password=abcd.1234; Persist Security Info=False; Connect Timeout=300";
 
             if (connectionUsed == "mysql")
             {
-                string mySqlConnection = _configuration.GetConnectionString("MySQLConnection");
+                connectionString = _configuration.GetConnectionString("MySQLConnection");
+                string mySqlConnection = connectionString;
                 options.UseMySQL(mySqlConnection);
             }
             else
             {
-                throw new Exception("Connection Used Cannot Found OnConfiguration");
+                throw new Exception("Connection Used Cannot Found OnConfiguration. ["+ connectionUsed +"] = "+ connectionString);
             }
         }
 

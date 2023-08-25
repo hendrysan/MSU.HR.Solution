@@ -7,6 +7,7 @@ namespace MSU.HR.Models.Entities
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
         public string UserFullName { get; set; }
+        public string UserCode { get; set; }
         public Reason? Reason { get; set; }
         public int TemporaryAnnualLeaveAllowance { get; set; }
         public DateTime StartDate { get; set; }

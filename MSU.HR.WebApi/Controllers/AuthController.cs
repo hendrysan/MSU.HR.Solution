@@ -23,7 +23,6 @@ namespace MSU.HR.WebApi.Controllers
         private readonly IToken _token;
         private readonly IUser _user;
         private readonly IEmployee _employee;
-        //private readonly DatabaseContext _context;
         private readonly ILogger<AuthController> _logger;
         private readonly IConfiguration _configuration;
         private readonly string loginProvider = "bearer";
@@ -34,25 +33,8 @@ namespace MSU.HR.WebApi.Controllers
             _logger = logger;
             _configuration = configuration;
             _userManager = userManager;
-            //_context = context;
             _user = user;
             _employee = employee;
-        }
-
-        [HttpPost]
-        [Route("TestError")]
-        public async Task<IActionResult> TestError([FromBody] BankRequest request)
-        {
-            //var identity = new UserIdentityModel(User.Identity as ClaimsIdentity);
-            //var user = await _user.GetProfile();//_context.Users.Include(r => r.Role).Include(c => c.Corporate).Include(e => e.Employee).FirstOrDefault(u => u.Id == identity.Id.ToString());
-            //if (user is null) return Unauthorized("silahkan login");
-
-            //return Ok(user);
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            return Unauthorized();
         }
 
         [HttpPost]
@@ -113,7 +95,7 @@ namespace MSU.HR.WebApi.Controllers
                 Code = user.Code,
                 Email = user.Email,
                 FullName = user.FullName,
-                RefreshToken = user.RefreshToken,//Guid.NewGuid().ToString(),
+                RefreshToken = user.RefreshToken,
                 Role = user.Role?.Id.ToString(),
                 UserId = user.Id,
                 Username = user.UserName,
@@ -141,7 +123,6 @@ namespace MSU.HR.WebApi.Controllers
             var principal = _token.GetPrincipalFromExpiredToken(login.Token);
             if (principal == null)
             {
-                //return BadRequest("Invalid access token or refresh token");
                 return BadRequest(new ErrorModel()
                 {
                     ErrorCode = 400,
@@ -176,7 +157,7 @@ namespace MSU.HR.WebApi.Controllers
                 Code = login.Code,
                 Email = login.Email,
                 FullName = login.FullName,
-                RefreshToken = user.RefreshToken,//Guid.NewGuid().ToString(),
+                RefreshToken = user.RefreshToken,
                 Role = login.Role,
                 UserId = login.UserId,
                 Username = login.Username,
@@ -191,8 +172,7 @@ namespace MSU.HR.WebApi.Controllers
         [Authorize]
         public async Task<IActionResult> Profile()
         {
-            var identity = new UserIdentityModel(User.Identity as ClaimsIdentity);
-            var user = await _user.GetProfile();//_context.Users.Include(r => r.Role).Include(c => c.Corporate).Include(e => e.Employee).FirstOrDefault(u => u.Id == identity.Id.ToString());
+            var user = await _user.GetProfile();
             if (user is null) return Unauthorized("silahkan login");
 
             return Ok(user);
@@ -203,6 +183,14 @@ namespace MSU.HR.WebApi.Controllers
         public async Task<IActionResult> EmployeeConnection()
         {
             var task = await _user.EmployeeUserConnectedAsync();
+            return Ok(task);
+        }
+
+        [HttpGet("EmployeeConnection/{code}")]
+        [Authorize]
+        public async Task<IActionResult> EmployeeConnection(string code)
+        {
+            var task = await _user.EmployeeUserConnectedAsync(code);
             return Ok(task);
         }
 

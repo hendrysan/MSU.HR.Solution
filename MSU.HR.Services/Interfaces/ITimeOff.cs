@@ -1,4 +1,5 @@
 ﻿using MSU.HR.Models.Entities;
+using MSU.HR.Models.Others;
 using MSU.HR.Models.Requests;
 using MSU.HR.Models.Responses;
 
@@ -18,5 +19,6 @@ namespace MSU.HR.Services.Interfaces
         Task<IEnumerable<TimeOff>?> GetPendingFinishTimeOffsAsync();
         Task<TimeOff> GetTimeOffDetailAsync(Guid timeOffId);
         Task<IEnumerable<TimeOffHistory>?> GetTimeOffHistoriesAsync(Guid timeOffId);
+        Task<TimeOffSummaryModel?> GetTimeOffSummaryAsync(string code, int year);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using MSU.HR.Commons.Enums;
@@ -27,6 +28,13 @@ namespace MSU.HR.Services.Repositories
             _logError = logError;
         }
 
+        public static List<string> ListStatusTimeOffAllowed = new()
+        {
+            StatusTimeOffEnum.REQUEST.ToString(),
+            StatusTimeOffEnum.APPROVED.ToString(),
+            StatusTimeOffEnum.EXPIRED.ToString(),
+            StatusTimeOffEnum.FINISH.ToString()
+        };
 
         private async Task<int> SaveHistory(Guid timeOffId, string remarks, StatusTimeOffEnum status)
         {
@@ -227,6 +235,7 @@ namespace MSU.HR.Services.Repositories
                 trx.Id = Guid.NewGuid();
                 trx.UserId = userIdentity.Id;
                 trx.UserFullName = userIdentity.FullName;
+                trx.UserCode = userIdentity.Code;
                 trx.Reason = reason;
                 trx.TemporaryAnnualLeaveAllowance = request.TemporaryAnnualLeaveAllowance;
                 trx.StartDate = request.StartDate;
@@ -252,19 +261,22 @@ namespace MSU.HR.Services.Repositories
         {
             try
             {
-
+                var status = StatusTimeOffEnum.EXPIRED.ToString();
+                var user = await _context.Users.Where(i => i.Id == userId.ToString()).Include(i => i.Employee).FirstOrDefaultAsync();
                 var taken = await GetCountLeaveAllowanceAsync(userId);
                 TimeOff trx = new TimeOff();
-                var status = StatusTimeOffEnum.EXPIRED;
+                
                 trx.Id = Guid.NewGuid();
                 trx.UserId = userId;
+                trx.UserCode = user.Employee?.Code ?? string.Empty;
+                trx.UserFullName = user.Employee?.Name ?? string.Empty;
                 trx.Reason = null;
-                trx.TemporaryAnnualLeaveAllowance = 0;
+                trx.TemporaryAnnualLeaveAllowance = taken.Total;
                 trx.StartDate = DateTime.Now;
                 trx.EndDate = DateTime.Now;
-                trx.Notes = "Expired Submit by System ";
+                trx.Notes = "Expired Submit by System";
                 trx.Taken = taken.Total;
-                trx.StatusId = status.ToString();
+                trx.StatusId = status;
                 trx.ApprovedBy = string.Empty;
                 trx.CreatedDate = DateTime.Now;
                 _context.TimeOffs.Add(trx);
@@ -328,9 +340,6 @@ namespace MSU.HR.Services.Repositories
                     throw new Exception("badrequest User Department Not HRD");
 
                 var status = StatusTimeOffEnum.FINISH;
-                //trx.ApprovedDate = DateTime.Now;
-                //trx.ApprovedBy = userIdentity.Id;
-                //trx.ApprovedRemarks = string.Empty;
                 trx.StatusId = status.ToString();
                 var result = await _context.SaveChangesAsync();
                 await SaveHistory(timeOffId, string.Empty, status);
@@ -348,7 +357,6 @@ namespace MSU.HR.Services.Repositories
             try
             {
                 var status = StatusTimeOffEnum.REQUEST.ToString();
-                //var trx = await _context.TimeOffs.Where(i => i.ApprovedBy == userId && i.StatusId == status).Include(r => r.Reason).ToListAsync();
                 var trx = await _context.TimeOffs.Where(i => i.StatusId == status && i.ApprovedBy == code).Include(r => r.Reason).ToListAsync();
                 return trx.OrderByDescending(i => i.CreatedDate).ToList();
             }
@@ -382,6 +390,40 @@ namespace MSU.HR.Services.Repositories
             {
                 await _logError.SaveAsync(ex, JsonSerializer.Serialize(string.Empty));
                 throw new Exception("Time Off GetPendingFinishTimeOffsAsync Error : " + ex.Message);
+            }
+        }
+
+        public async Task<TimeOffSummaryModel?> GetTimeOffSummaryAsync(string code, int year)
+        {
+            try
+            {
+                var result = new TimeOffSummaryModel();
+                var timeOffs = await _context.TimeOffs.Where(i => i.UserCode == code && i.StartDate.Year == year).Include(i => i.Reason).ToListAsync();
+                result.Year = year;
+                result.ReminingBalance = (await this.GetCountLeaveAllowanceAsync(timeOffs.First().UserId)).Total;
+                result.UserCode = code;
+
+                if (timeOffs.Count > 0)
+                {
+                    result.TotalTaken = timeOffs.Where(i => ListStatusTimeOffAllowed.Contains(i.StatusId)).Sum(i => i.Taken);
+                    result.Status = timeOffs.Select(i => i.StatusId).Distinct().ToList();
+                    result.Details = timeOffs.Select(i => new TimeOffSummaryDetailModel()
+                    {
+                        Id = i.Id,
+                        EndDate = i.EndDate,
+                        StartDate = i.StartDate,
+                        ReasonName = i.Reason?.Name ?? string.Empty,
+                        Taken = i.Taken,
+                        Status = Enum.GetName(enumType: typeof(StatusTimeOffEnum), i.StatusId) ?? string.Empty,
+                    }).OrderBy(i => new { i.Status, i.StartDate }).ToList();
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                await _logError.SaveAsync(ex, JsonSerializer.Serialize(code));
+                throw new Exception("Time Off GetTimeOffSummaryAsync Error : " + ex.Message);
             }
         }
     }
