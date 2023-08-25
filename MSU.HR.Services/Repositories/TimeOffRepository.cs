@@ -265,7 +265,7 @@ namespace MSU.HR.Services.Repositories
                 var user = await _context.Users.Where(i => i.Id == userId.ToString()).Include(i => i.Employee).FirstOrDefaultAsync();
                 var taken = await GetCountLeaveAllowanceAsync(userId);
                 TimeOff trx = new TimeOff();
-                
+
                 trx.Id = Guid.NewGuid();
                 trx.UserId = userId;
                 trx.UserCode = user.Employee?.Code ?? string.Empty;
@@ -406,7 +406,7 @@ namespace MSU.HR.Services.Repositories
                 if (timeOffs.Count > 0)
                 {
                     result.TotalTaken = timeOffs.Where(i => ListStatusTimeOffAllowed.Contains(i.StatusId)).Sum(i => i.Taken);
-                    result.Status = timeOffs.Select(i => i.StatusId).Distinct().ToList();
+                    result.Status = timeOffs.Select(i => i.StatusId).Distinct().OrderBy(i => i).ToList();
                     result.Details = timeOffs.Select(i => new TimeOffSummaryDetailModel()
                     {
                         Id = i.Id,
