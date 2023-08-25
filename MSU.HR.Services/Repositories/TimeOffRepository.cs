@@ -30,10 +30,10 @@ namespace MSU.HR.Services.Repositories
 
         public static List<string> ListStatusTimeOffAllowed = new()
         {
-            StatusTimeOffEnum.REQUEST.ToString(),
+            StatusTimeOffEnum.REQUESTED.ToString(),
             StatusTimeOffEnum.APPROVED.ToString(),
             StatusTimeOffEnum.EXPIRED.ToString(),
-            StatusTimeOffEnum.FINISH.ToString()
+            StatusTimeOffEnum.FINISHED.ToString()
         };
 
         private async Task<int> SaveHistory(Guid timeOffId, string remarks, StatusTimeOffEnum status)
@@ -62,7 +62,7 @@ namespace MSU.HR.Services.Repositories
         {
             try
             {
-                var statusBefore = StatusTimeOffEnum.REQUEST;
+                var statusBefore = StatusTimeOffEnum.REQUESTED;
                 var trx = await _context.TimeOffs.Where(i => i.Id == timeOffId).FirstOrDefaultAsync();
                 if (trx == null)
                     throw new Exception("badrequest Data Transaction Not found");
@@ -103,7 +103,7 @@ namespace MSU.HR.Services.Repositories
 
                 var trxApproved = await _context.TimeOffs.Where(i => i.UserId == userId && i.StatusId == StatusTimeOffEnum.APPROVED.ToString()).ToListAsync();
                 var trxExpired = await _context.TimeOffs.Where(i => i.UserId == userId && i.StatusId == StatusTimeOffEnum.EXPIRED.ToString()).ToListAsync();
-                var trxFinish = await _context.TimeOffs.Where(i => i.UserId == userId && i.StatusId == StatusTimeOffEnum.FINISH.ToString()).ToListAsync();
+                var trxFinish = await _context.TimeOffs.Where(i => i.UserId == userId && i.StatusId == StatusTimeOffEnum.FINISHED.ToString()).ToListAsync();
 
                 var date1 = DateTime.Now.Date;
                 var date2 = user.Employee.JoinDate.Date;
@@ -123,6 +123,21 @@ namespace MSU.HR.Services.Repositories
             catch (Exception ex)
             {
                 await _logError.SaveAsync(ex, JsonSerializer.Serialize(userId));
+                throw new Exception("Time Off GetCountLeaveAllowanceAsync Error : " + ex.Message);
+            }
+        }
+
+        public async Task<CountLeaveAllowanceResponse> GetCountLeaveAllowanceAsync()
+        {
+            try
+            {
+                var userId = userIdentity.Id;
+                var task = await GetCountLeaveAllowanceAsync(userId);
+                return task;
+            }
+            catch (Exception ex)
+            {
+                await _logError.SaveAsync(ex, "");
                 throw new Exception("Time Off GetCountLeaveAllowanceAsync Error : " + ex.Message);
             }
         }
@@ -151,6 +166,21 @@ namespace MSU.HR.Services.Repositories
             catch (Exception ex)
             {
                 await _logError.SaveAsync(ex, JsonSerializer.Serialize(userId));
+                throw new Exception("Time Off GetTimeOffsAsync Error : " + ex.Message);
+            }
+        }
+
+        public async Task<IEnumerable<TimeOff>?> GetTimeOffsAsync()
+        {
+            try
+            {
+                Guid userId = userIdentity.Id;
+                var trx = await _context.TimeOffs.Where(i => i.UserId == userId).Include(r => r.Reason).ToListAsync();
+                return trx.OrderByDescending(i => i.CreatedDate).ToList();
+            }
+            catch (Exception ex)
+            {
+                await _logError.SaveAsync(ex, "");
                 throw new Exception("Time Off GetTimeOffsAsync Error : " + ex.Message);
             }
         }
@@ -188,7 +218,7 @@ namespace MSU.HR.Services.Repositories
         {
             try
             {
-                var statusBefore = StatusTimeOffEnum.REJECT;
+                var statusBefore = StatusTimeOffEnum.REJECTED;
                 //var trxExists = await _context.TimeOffs.Where(i => i.UserId == userIdentity.Id && i.StatusId == statusBefore.ToString()).ToListAsync();
                 //if (trxExists.Count > 0)
                 //    throw new Exception("badrequest Data Transaction Invalid");
@@ -197,13 +227,13 @@ namespace MSU.HR.Services.Repositories
                 if (trx == null)
                     throw new Exception("badrequest Data Not Found");
 
-                if (trx.StatusId != StatusTimeOffEnum.REQUEST.ToString())
+                if (trx.StatusId != StatusTimeOffEnum.REQUESTED.ToString())
                     throw new Exception("badrequest Status Transaction Invalid");
 
                 if (trx.ApprovedBy != userIdentity.Code)
                     throw new Exception("badrequest User Code Invalid");
 
-                var status = StatusTimeOffEnum.REJECT;
+                var status = StatusTimeOffEnum.REJECTED;
                 trx.ApprovedDate = DateTime.Now;
                 //trx.ApprovedBy = userIdentity.Code;
                 trx.ApprovedRemarks = remarks;
@@ -223,7 +253,7 @@ namespace MSU.HR.Services.Repositories
         {
             try
             {
-                var status = StatusTimeOffEnum.REQUEST;
+                var status = StatusTimeOffEnum.REQUESTED;
                 var trxExists = await _context.TimeOffs.Where(i => i.UserId == userIdentity.Id && i.StatusId == status.ToString()).ToListAsync();
                 if (trxExists.Count > 0)
                     throw new Exception("badrequest Submited Invalid, already exists Requested");
@@ -339,7 +369,7 @@ namespace MSU.HR.Services.Repositories
                 if (user.Department.Code != "HRD")
                     throw new Exception("badrequest User Department Not HRD");
 
-                var status = StatusTimeOffEnum.FINISH;
+                var status = StatusTimeOffEnum.FINISHED;
                 trx.StatusId = status.ToString();
                 var result = await _context.SaveChangesAsync();
                 await SaveHistory(timeOffId, string.Empty, status);
@@ -356,7 +386,7 @@ namespace MSU.HR.Services.Repositories
         {
             try
             {
-                var status = StatusTimeOffEnum.REQUEST.ToString();
+                var status = StatusTimeOffEnum.REQUESTED.ToString();
                 var trx = await _context.TimeOffs.Where(i => i.StatusId == status && i.ApprovedBy == code).Include(r => r.Reason).ToListAsync();
                 return trx.OrderByDescending(i => i.CreatedDate).ToList();
             }

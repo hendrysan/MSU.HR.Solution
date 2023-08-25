@@ -8,6 +8,7 @@ namespace MSU.HR.Services.Interfaces
     public interface ITimeOff
     {
         Task<CountLeaveAllowanceResponse> GetCountLeaveAllowanceAsync(Guid userId);
+        Task<CountLeaveAllowanceResponse> GetCountLeaveAllowanceAsync();
         Task<int> SubmitAsync(TimeOffRequest request);
         Task<int> ApproveAsync(Guid timeOffId, string remarks);
         Task<int> RejectAsync(Guid timeOffId, string remarks);
@@ -15,6 +16,7 @@ namespace MSU.HR.Services.Interfaces
         Task<int> ExpiredAsync(Guid userId);
         Task<Employee?> GetUserSuperiorityAsync(string code);
         Task<IEnumerable<TimeOff>?> GetTimeOffsAsync(Guid userId);
+        Task<IEnumerable<TimeOff>?> GetTimeOffsAsync();
         Task<IEnumerable<TimeOff>?> GetPendingApprovalTimeOffsAsync(string code);
         Task<IEnumerable<TimeOff>?> GetPendingFinishTimeOffsAsync();
         Task<TimeOff> GetTimeOffDetailAsync(Guid timeOffId);

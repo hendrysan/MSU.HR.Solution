@@ -7,6 +7,7 @@ using MSU.HR.Models.Entities;
 using MSU.HR.Models.Others;
 using MSU.HR.Services.Interfaces;
 using MySql.Data.MySqlClient;
+using Org.BouncyCastle.Asn1.Ocsp;
 using System.Data;
 using System.Security.Claims;
 
@@ -32,12 +33,26 @@ namespace MSU.HR.Services.Repositories
             using IDbConnection connection = new MySqlConnection(connectionString);
 
             LogError entity = new LogError();
-            var request = _httpContextAccessor.HttpContext.Request;
-            var ip = request.Host.Value;
-            var ipClient = request.HttpContext.Connection.RemoteIpAddress.ToString();
-            var queryString = request.QueryString.ToString();
+            var httpContext = _httpContextAccessor.HttpContext;
 
-            var userAgent = request.Headers["User-Agent"].ToString();
+            if (httpContext != null)
+            {
+                var request = _httpContextAccessor.HttpContext.Request;
+                var ip = request.Host.Value;
+                var ipClient = request.HttpContext.Connection.RemoteIpAddress.ToString();
+                var queryString = request.QueryString.ToString();
+                var userAgent = request.Headers["User-Agent"].ToString();
+
+                entity.URL = request.Path;
+                entity.Parameter = queryString;
+                entity.Browser = userAgent;
+                entity.IP = ip;
+                entity.IPClient = ipClient;
+            }
+
+
+
+
             string msg = "";
             string type = "";
             string src = "";
@@ -51,13 +66,9 @@ namespace MSU.HR.Services.Repositories
             entity.Message = msg;
             entity.Type = type;
             entity.Source = src;
-            entity.URL = request.Path;
-            entity.Parameter = queryString;
+            
             entity.ParameterBody = body;
-            entity.Browser = userAgent;
-            entity.IP = ip;
-            entity.IPClient = ipClient;
-
+            
 
             entity.UserAgent = userIdentity.Id.ToString();
             entity.CreatedDate = DateTime.Now;

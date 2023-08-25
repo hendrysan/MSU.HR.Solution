@@ -1,0 +1,97 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+    int no = 1;
+}
+@model MSU.HR.Models.ViewModels.PaidLeaveIndexModel
+
+<div class="col-sm-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <h4>Remining Allowance Paid Leave : @Model.ReminingAllowance</h4>
+                </div>
+                <div class="ml-auto">
+                    <a href="" class="btn btn-primary">Request Paid Leave</a>
+                </div>
+            </div>
+
+
+
+        </div>
+        <div>
+            <div class="card-block row">
+                <div class="col-sm-12 col-lg-12 col-xl-12">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">No</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Taken</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Approval Date</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                                @if (Model.TimeOffs?.Count() == 0)
+                                {
+                                    <tr>
+                                        <td class="text-center" colspan="6">
+                                            <i>
+                                                No found data Paid Leave
+                                            </i>
+                                        </td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    @foreach (var i in Model.TimeOffs)
+                                    {
+                                        <tr>
+                                            <th scope="row">@(no++)</th>
+                                            <td> @i.StartDate.ToString("yyyy-MM-dd") / @i.EndDate.ToString("yyyy-MM-dd")</td>
+                                            <td> @i.Taken Days</td>
+                                            <td class="d-flex align-items-center">
+                                                @if (i.StatusId == MSU.HR.Commons.Enums.StatusTimeOffEnum.REQUESTED.ToString())
+                                                {
+                                                    <i class="bg-light-primary font-primary" data-feather="alert-circle"></i>
+                                                    <span class="font-primary">
+                                                        @i.StatusId
+                                                    </span>
+                                                }
+                                                else if (i.StatusId == MSU.HR.Commons.Enums.StatusTimeOffEnum.APPROVED.ToString() || i.StatusId == MSU.HR.Commons.Enums.StatusTimeOffEnum.FINISHED.ToString())
+                                                {
+                                                    <i class="bg-light-success font-success" data-feather="check-circle"></i>
+                                                    <span class="font-success">
+                                                        @i.StatusId
+                                                    </span>
+                                                }
+                                                else if (i.StatusId == MSU.HR.Commons.Enums.StatusTimeOffEnum.REJECTED.ToString())
+                                                {
+                                                    <i class="bg-light-danger font-danger" data-feather="x-circle"></i>
+                                                    <span class="font-danger">
+                                                        @i.StatusId
+                                                    </span>
+                                                }
+                                            </td>
+                                            <td>@i.ApprovedDate</td>
+                                            <td>
+                                                <a href="#"> Show Detail</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

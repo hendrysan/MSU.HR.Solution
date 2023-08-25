@@ -2,10 +2,10 @@
 {
     public enum StatusTimeOffEnum
     {
-        REQUEST,
+        REQUESTED,
         APPROVED,
-        REJECT,
+        REJECTED,
         EXPIRED,
-        FINISH
+        FINISHED
     }
 }

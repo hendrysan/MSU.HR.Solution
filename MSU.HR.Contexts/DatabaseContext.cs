@@ -41,7 +41,7 @@ namespace MSU.HR.Contexts
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             var connectionUsed = _configuration.GetSection("ConnectionUsed").Value.ToString().ToLower();
-            string connectionString = "server=localhost; port=3306; database=dbpayroll; user=root; password=abcd.1234; Persist Security Info=False; Connect Timeout=300";
+            string connectionString = "";// "server=localhost; port=3306; database=dbpayroll; user=root; password=abcd.1234; Persist Security Info=False; Connect Timeout=300";
 
             if (connectionUsed == "mysql")
             {
