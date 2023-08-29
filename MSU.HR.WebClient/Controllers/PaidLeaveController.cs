@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Server.HttpSys;
 using MSU.HR.Commons.Extensions;
 using MSU.HR.Models.Entities;
 using MSU.HR.Models.Others;
 using MSU.HR.Models.Requests;
 using MSU.HR.Models.ViewModels;
 using MSU.HR.Services.Interfaces;
+using MySqlX.XDevAPI;
 using System.Security.Claims;
+using System.Text.Json;
 
 namespace MSU.HR.WebClient.Controllers
 {
@@ -40,6 +43,14 @@ namespace MSU.HR.WebClient.Controllers
                     },
 
                 };
+
+
+                var alert = HttpContext.Session.GetString("Alert");
+                if (alert != null)
+                {
+                    ViewBag.Alert = JsonSerializer.Deserialize<AlertModel>(alert);
+                    HttpContext.Session.SetString("Alert", "");
+                }
                 var data = await _timeOff.GetTimeOffsAsync();
 
                 PaidLeaveIndexModel model = new PaidLeaveIndexModel();
@@ -102,9 +113,23 @@ namespace MSU.HR.WebClient.Controllers
             try
             {
                 var model = new TimeOffRequest();
+                model.StartDate = request.StartDate;
+                model.EndDate = request.EndDate;
+                model.TemporaryAnnualLeaveAllowance = request.RemainingAllowance;
+                model.Notes = request.Notes;
+                model.ReasonId = request.ReasonId;
+                model.Taken = request.Taken; //Convert.ToInt32((request.EndDate.Date - request.StartDate.Date).TotalDays);
                 await _timeOff.SubmitAsync(model);
 
-                return
+                var alert = new AlertModel()
+                {
+                    Message = "Your request has been submitted",
+                    Type = AlertType.Success
+                };
+
+                HttpContext.Session.SetString("Alert", JsonSerializer.Serialize(alert));
+
+                return RedirectToAction(actionName: "Index");
             }
             catch (Exception ex)
             {

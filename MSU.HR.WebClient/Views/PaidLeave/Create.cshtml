@@ -22,7 +22,7 @@
         </div>
         <div>
             <div class="card-body">
-                <form class="needs-validation" method="post" asp-controller="PaidLeave" asp-action="Create">
+                <form class="needs-validation" method="post" asp-controller="PaidLeave" asp-action="PostCreate">
                     @Html.AntiForgeryToken()
                     @Html.HiddenFor(i=>i.UserCode, htmlAttributes: new {Value = AuthRazorExtension.GetUserCode(this)})
                     @Html.HiddenFor(i=>i.UserId, htmlAttributes: new {Value = AuthRazorExtension.GetUserId(this)})
@@ -72,7 +72,8 @@
 
                             <div class="col-12">
                                 <label class="form-label" for="">Taken Days</label>
-                                <input class="form-control disabled" value="" readonly required="">
+                                @* <input class="form-control disabled" value="" readonly required=""> *@
+                                @Html.TextBoxFor(i=>i.Taken, htmlAttributes: new { @class = "form-control", @type="number",@required=""})
                             </div>
 
                             <div class="col-12">
