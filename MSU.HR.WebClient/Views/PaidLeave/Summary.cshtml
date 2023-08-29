@@ -21,8 +21,6 @@
             <div class="card-block row">
                 <div class="col-sm-12 col-lg-12 col-xl-12">
                     <div class="row">
-
-
                     </div>
                 </div>
                 <div class="col-sm-12 col-lg-12 col-xl-12">
@@ -55,22 +53,148 @@
                     <div class="tab-content" id="myTabContent">
                         <div class="tab-pane fade show active" id="requested" role="tabpanel" aria-labelledby="requested-tabs">
                             <div class="pt-3 mb-3">
-                                request
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Date</th>
+                                            <th scope="col">Taken</th>
+                                            <th scope="col">Approver</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.Details.Where(i => i.Status == StatusTimeOffEnum.REQUESTED.ToString()).Count() == 0)
+                                        {
+                                            <tr>
+                                                <td class="text-center" colspan="3">
+                                                    <i>
+                                                        Data not found
+                                                    </i>
+                                                </td>
+                                            </tr>
+                                        }
+                                        else
+                                        {
+                                            @foreach (var i in Model.Details.Where(i => i.Status == StatusTimeOffEnum.REQUESTED.ToString()).ToList())
+                                            {
+                                                <tr>
+                                                    <td> @i.StartDate.Value.ToString("yyyy-MM-dd") / @i.EndDate.Value.ToString("yyyy-MM-dd")</td>
+                                                    <td>@i.Taken</td>
+                                                    <td>@i.Approver</td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                         <div class="tab-pane fade show" id="approved" role="tabpanel" aria-labelledby="approved-tabs">
                             <div class="pt-3 mb-3">
-                                approve
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Date</th>
+                                            <th scope="col">Taken</th>
+                                            <th scope="col">Approve Date</th>
+                                            <th scope="col">Remarks</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.Details.Where(i => i.Status == StatusTimeOffEnum.APPROVED.ToString()).Count() == 0)
+                                        {
+                                            <tr>
+                                                <td class="text-center" colspan="4">
+                                                    <i>
+                                                        Data not found
+                                                    </i>
+                                                </td>
+                                            </tr>
+                                        }
+                                        else
+                                        {
+                                            @foreach (var i in Model.Details.Where(i => i.Status == StatusTimeOffEnum.APPROVED.ToString()).ToList())
+                                            {
+                                                <tr>
+                                                    <td> @i.StartDate.Value.ToString("yyyy-MM-dd") / @i.EndDate.Value.ToString("yyyy-MM-dd")</td>
+                                                    <td>@i.Taken</td>
+                                                    <td>@i.ApproveDate</td>
+                                                    <td>@i.Remarks</td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                         <div class="tab-pane fade show" id="rejected" role="tabpanel" aria-labelledby="rejected-tabs">
                             <div class="pt-3 mb-3">
-                                reject
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Date</th>
+                                            <th scope="col">Taken</th>
+                                            <th scope="col">Remarks</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.Details.Where(i => i.Status == StatusTimeOffEnum.REJECTED.ToString()).Count() == 0)
+                                        {
+                                            <tr>
+                                                <td class="text-center" colspan="3">
+                                                    <i>
+                                                        Data not found
+                                                    </i>
+                                                </td>
+                                            </tr>
+                                        }
+                                        else
+                                        {
+                                            @foreach (var i in Model.Details.Where(i => i.Status == StatusTimeOffEnum.REJECTED.ToString()).ToList())
+                                            {
+                                                <tr>
+                                                    <td> @i.StartDate.Value.ToString("yyyy-MM-dd") / @i.EndDate.Value.ToString("yyyy-MM-dd")</td>
+                                                    <td>@i.Taken</td>
+                                                    <td>@i.Remarks</td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                         <div class="tab-pane fade show" id="finished" role="tabpanel" aria-labelledby="finished-tabs">
                             <div class="pt-3 mb-3">
-                                finished
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Date</th>
+                                            <th scope="col">Taken</th>
+                                            <th scope="col">Finish Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.Details.Where(i => i.Status == StatusTimeOffEnum.FINISHED.ToString()).Count() == 0)
+                                        {
+                                            <tr>
+                                                <td class="text-center" colspan="2">
+                                                    <i>
+                                                        Data not found
+                                                    </i>
+                                                </td>
+                                            </tr>
+                                        }
+                                        else
+                                        {
+                                            @foreach (var i in Model.Details.Where(i => i.Status == StatusTimeOffEnum.FINISHED.ToString()).ToList())
+                                            {
+                                                <tr>
+                                                    <td> @i.StartDate.Value.ToString("yyyy-MM-dd") / @i.EndDate.Value.ToString("yyyy-MM-dd")</td>
+                                                    <td>@i.Taken</td>
+                                                    <td>@i.LastUpdateDate</td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
 

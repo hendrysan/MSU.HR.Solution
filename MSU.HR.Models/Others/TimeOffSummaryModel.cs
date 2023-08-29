@@ -19,6 +19,10 @@ namespace MSU.HR.Models.Others
         public int Taken { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
+        public string Approver { get; set; }
+        public string Remarks { get; set; }
+        public DateTime? ApproveDate { get; set; }
         public string ReasonName { get; set; }
+        public DateTime? LastUpdateDate { get; set; }
     }
 }
