@@ -1,14 +1,10 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MSU.HR.Contexts;
 using MSU.HR.Models.Entities;
 using MSU.HR.Models.Requests;
 using MSU.HR.Services.Interfaces;
-using MSU.HR.Services.Repositories;
-using Org.BouncyCastle.Asn1.Ocsp;
 using System.Security.Claims;
 
 namespace MSU.HR.WebClient.Controllers
@@ -87,7 +83,7 @@ namespace MSU.HR.WebClient.Controllers
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
             string? returnUrl = HttpContext.Request.Query["returnUrl"];
 
-            HttpContext.Session.SetString("Alert","");
+            HttpContext.Session.SetString("Alert", "");
             return Redirect(returnUrl ?? "/");
 
         }

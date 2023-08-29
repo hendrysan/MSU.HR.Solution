@@ -8,7 +8,7 @@ namespace MSU.HR.WebClient.Controllers
     {
         public BaseContoller()
         {
-            
+
         }
 
         public void GetAlert()

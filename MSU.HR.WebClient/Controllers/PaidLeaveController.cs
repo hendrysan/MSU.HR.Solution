@@ -1,15 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Server.HttpSys;
 using MSU.HR.Commons.Enums;
-using MSU.HR.Commons.Extensions;
-using MSU.HR.Models.Entities;
 using MSU.HR.Models.Others;
 using MSU.HR.Models.Requests;
 using MSU.HR.Models.ViewModels;
 using MSU.HR.Services.Interfaces;
-using MySqlX.XDevAPI;
-using System.Security.Claims;
-using System.Text.Json;
 
 namespace MSU.HR.WebClient.Controllers
 {
@@ -118,7 +112,7 @@ namespace MSU.HR.WebClient.Controllers
             try
             {
                 SetAlert("Your action has been submitted", AlertType.Success);
-                
+
                 if (request.ActionSubmit == StatusTimeOffEnum.APPROVED.ToString())
                 {
                     await _timeOff.ApproveAsync(request.Id, request.Remarks);
