@@ -16,7 +16,7 @@
                     <h4>Create Request Paid Leave</h4>
                 </div>
                 <div class="ml-auto">
-                    <a href="@Url.Action("Index","PaidLeave")"> Back to List</a>
+                    <a href="@Url.Action("List","PaidLeave")"> Back to List</a>
                 </div>
             </div>
         </div>
@@ -33,23 +33,23 @@
                             <br />
                             <div class="col-12">
                                 <label class="form-label" for="">Full Name</label>
-                                @Html.TextBoxFor(i=>i.EmployeeInfo.Name, new { @class = "form-control-plaintext disabled", @readonly = "readonly" })
+                                @Html.TextBoxFor(i=>i.EmployeeInfo.Name, new { @class = "form-control disabled", @readonly = "readonly" })
                             </div>
                             <div class="col-12">
                                 <label class="form-label" for="">Department</label>
-                                @Html.TextBoxFor(i=>i.EmployeeInfo.Department.Name, new { @class = "form-control-plaintext disabled", @readonly = "readonly" })
+                                @Html.TextBoxFor(i=>i.EmployeeInfo.Department.Name, new { @class = "form-control disabled", @readonly = "readonly" })
                             </div>
                             <div class="col-12">
                                 <label class="form-label" for="">Section</label>
-                                @Html.TextBoxFor(i=>i.EmployeeInfo.Section.Name, new { @class = "form-control-plaintext disabled", @readonly = "readonly" })
+                                @Html.TextBoxFor(i=>i.EmployeeInfo.Section.Name, new { @class = "form-control disabled", @readonly = "readonly" })
                             </div>
                             <div class="col-12">
                                 <label class="form-label" for="">Leader</label>
-                                @Html.TextBoxFor(i=>i.SuperiorityInfo, new { @class = "form-control-plaintext disabled", @readonly = "readonly" })
+                                @Html.TextBoxFor(i=>i.SuperiorityInfo, new { @class = "form-control disabled", @readonly = "readonly" })
                             </div>
                             <div class="col-12">
                                 <label class="form-label" for="">Remaining Allowance</label>
-                                @Html.TextBoxFor(i=>i.RemainingAllowance, new { @class = "form-control-plaintext disabled", @readonly = "readonly" })
+                                @Html.TextBoxFor(i=>i.RemainingAllowance, new { @class = "form-control disabled", @readonly = "readonly" })
                             </div>
                         </div>
 

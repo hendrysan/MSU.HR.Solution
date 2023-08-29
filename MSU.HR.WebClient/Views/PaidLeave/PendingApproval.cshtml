@@ -1,0 +1,69 @@
+﻿@{
+    ViewData["Title"] = "List of Paid Leave Pending Approval";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+    int no = 1;
+}
+@model MSU.HR.Models.ViewModels.PaidLeaveIndexModel
+
+<div class="col-sm-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between">
+                <div>
+                </div>
+                <div class="ml-auto">
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="card-block row">
+                <div class="col-sm-12 col-lg-12 col-xl-12">
+                    <div class="table-responsive">
+                        @Html.Partial("_Alert")
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">No</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Taken</th>
+                                    <th scope="col">Requester</th>
+                                    <th scope="col">Created Date</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @if (Model.TimeOffs?.Count() == 0 || Model.TimeOffs == null)
+                                {
+                                    <tr>
+                                        <td class="text-center" colspan="6">
+                                            <i>
+                                                No found data Paid Leave
+                                            </i>
+                                        </td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    @foreach (var i in Model.TimeOffs)
+                                    {
+                                        <tr>
+                                            <th scope="row">@(no++)</th>
+                                            <td> @i.StartDate.ToString("yyyy-MM-dd") / @i.EndDate.ToString("yyyy-MM-dd")</td>
+                                            <td> @i.Taken Days</td>
+                                            <td> @i.UserCode - @i.UserFullName</td>
+                                            <td> @i.CreatedDate.Value.ToString("yyyy-MM-dd HH:mm") </td>
+                                            <td>
+                                                <a href="@Url.Action("Detail","PaidLeave", new {id=i.Id})"> Show Detail</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

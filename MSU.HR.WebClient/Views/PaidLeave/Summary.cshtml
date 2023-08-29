@@ -1,0 +1,82 @@
+﻿@using MSU.HR.Commons.Enums;
+@{
+    ViewData["Title"] = "List of Paid Leave";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+    int no = 1;
+}
+@model MSU.HR.Models.Others.TimeOffSummaryModel
+
+<div class="col-sm-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <h4>Summaries</h4>
+                </div>
+                <div class="ml-auto">
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="card-block row">
+                <div class="col-sm-12 col-lg-12 col-xl-12">
+                    <div class="row">
+
+
+                    </div>
+                </div>
+                <div class="col-sm-12 col-lg-12 col-xl-12">
+                    <ul class="simple-wrapper nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link txt-primary active" id="requested-tab" data-bs-toggle="tab" href="#requested" role="tab" aria-controls="home" aria-selected="true">
+                                REQUESTED
+                                <label class="badge badge-light-primary">@(Model.Details.Where(i => i.Status == StatusTimeOffEnum.REQUESTED.ToString()).Count())</label>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link txt-primary" id="approved-tabs" data-bs-toggle="tab" href="#approved" role="tab" aria-controls="profile" aria-selected="false">
+                                APPROVED
+                                <label class="badge badge-light-primary">@(Model.Details.Where(i => i.Status == StatusTimeOffEnum.APPROVED.ToString()).Count())</label>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link txt-primary" id="rejected-tab" data-bs-toggle="tab" href="#rejected" role="tab" aria-controls="contact" aria-selected="false">
+                                REJECTED
+                                <label class="badge badge-light-primary">@(Model.Details.Where(i => i.Status == StatusTimeOffEnum.REJECTED.ToString()).Count())</label>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link txt-primary" id="finished-tab" data-bs-toggle="tab" href="#finished" role="tab" aria-controls="contact" aria-selected="false">
+                                FINISHED
+                                <label class="badge badge-light-primary">@(Model.Details.Where(i => i.Status == StatusTimeOffEnum.FINISHED.ToString()).Count())</label>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="requested" role="tabpanel" aria-labelledby="requested-tabs">
+                            <div class="pt-3 mb-3">
+                                request
+                            </div>
+                        </div>
+                        <div class="tab-pane fade show" id="approved" role="tabpanel" aria-labelledby="approved-tabs">
+                            <div class="pt-3 mb-3">
+                                approve
+                            </div>
+                        </div>
+                        <div class="tab-pane fade show" id="rejected" role="tabpanel" aria-labelledby="rejected-tabs">
+                            <div class="pt-3 mb-3">
+                                reject
+                            </div>
+                        </div>
+                        <div class="tab-pane fade show" id="finished" role="tabpanel" aria-labelledby="finished-tabs">
+                            <div class="pt-3 mb-3">
+                                finished
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

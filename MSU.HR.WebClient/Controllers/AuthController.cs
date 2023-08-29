@@ -86,6 +86,8 @@ namespace MSU.HR.WebClient.Controllers
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
             string? returnUrl = HttpContext.Request.Query["returnUrl"];
+
+            HttpContext.Session.SetString("Alert","");
             return Redirect(returnUrl ?? "/");
 
         }

@@ -35,10 +35,10 @@
                             <span>Paid Leave</span>
                         </a>
                         <ul class="sidebar-submenu">
-                            <li><a href="@Url.Action("Index","PaidLeave")">List History</a></li>
-                            <li><a href="#">Pending Approval</a></li>
-                            <li><a href="#">Pending Finished</a></li>
-                            <li><a href="#">Summary</a></li>
+                            <li><a href="@Url.Action("List","PaidLeave")">List History</a></li>
+                            <li><a href="@Url.Action("PendingApproval","PaidLeave")">Pending Approval</a></li>
+                            <li><a href="@Url.Action("PendingFinish","PaidLeave")">Pending Finish</a></li>
+                            <li><a href="@Url.Action("Summary","PaidLeave")">Summary</a></li>
 
                         </ul>
                     </li>

@@ -1,0 +1,199 @@
+﻿@using MSU.HR.Commons.Enums;
+@{
+    ViewData["Title"] = "Detail Paid Leave Page";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+@model MSU.HR.Models.ViewModels.PaidLeaveDetailModel
+
+@section Styles{
+
+}
+
+<div class="col-sm-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <h4>Detail Request Paid Leave</h4>
+                </div>
+                <div class="ml-auto">
+                    @* <a href="@Url.Action("List","PaidLeave")"> Back to List</a> *@
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="card-body">
+                <form class="needs-validation" method="post" asp-controller="PaidLeave" asp-action="PostDetail">
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(i=>i.Id)
+                    <div class="row">
+                        <div class="col-6">
+                            <h5>Personal Information</h5>
+                            <br />
+                            <div class="col-12">
+                                <label class="form-label" for="">Full Name</label>
+                                @Html.TextBoxFor(i=>i.UserRequest.Name, new { @class = "form-control disabled", @readonly = "readonly" })
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" for="">Department</label>
+                                @Html.TextBoxFor(i=>i.UserRequest.Department.Name, new { @class = "form-control disabled", @readonly = "readonly" })
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" for="">Section</label>
+                                @Html.TextBoxFor(i=>i.UserRequest.Section.Name, new { @class = "form-control disabled", @readonly = "readonly" })
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" for="">Leader</label>
+                                @Html.TextBoxFor(i=>i.UserSuperior.Code, new { @class = "form-control disabled", @readonly = "readonly" })
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" for="">Remaining Allowance</label>
+                                @Html.TextBoxFor(i=>i.TimeOff.TemporaryAnnualLeaveAllowance, new { @class = "form-control disabled", @readonly = "readonly" })
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <h5>Request Information</h5>
+                            <br />
+                            <div class="col-12">
+                                <label class="form-label" for="">Status</label>
+                                @Html.TextBoxFor(i=>i.TimeOff.StatusId, htmlAttributes: new { @class = "form-control disabled", @readonly = "readonly"})
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" for="">Reason</label>
+                                @Html.TextBoxFor(i=>i.TimeOff.Reason.Name, htmlAttributes: new { @class = "form-control disabled", @readonly = "readonly"})
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" for="">Start Date</label>
+                                @Html.TextBoxFor(i=>i.TimeOff.StartDate,"{0:yyyy-MM-dd}", htmlAttributes: new { @class = "form-control disabled", @readonly = "readonly"})
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label" for="">End Date</label>
+                                @Html.TextBoxFor(i=>i.TimeOff.EndDate,"{0:yyyy-MM-dd}", htmlAttributes: new { @class = "form-control disabled", @readonly = "readonly"})
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label" for="">Taken Days</label>
+                                @* <input class="form-control disabled" value="" readonly required=""> *@
+                                @Html.TextBoxFor(i=>i.TimeOff.Taken, htmlAttributes: new { @class = "form-control disabled", @readonly = "readonly", @type="number"})
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label" for="">Notes</label>
+                                @Html.TextAreaFor(i=>i.TimeOff.Notes, 2,3, new { @class = "form-control disabled", @readonly = "readonly"})
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (Model.TimeOff.StatusId == StatusTimeOffEnum.REQUESTED.ToString() && Model.TimeOff.ApprovedBy == AuthRazorExtension.GetUserCode(this))
+                    {
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="col-12">
+                                    <label class="form-label" for="">Action</label>
+                                    <select class="form-control" name="ActionSubmit" id="ActionSubmit" required="required">
+                                        <option value="">--- Action ---</option>
+                                        <option value="@StatusTimeOffEnum.APPROVED.ToString()">Approve</option>
+                                        <option value="@StatusTimeOffEnum.REJECTED.ToString()">Reject</option>
+                                    </select>
+
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label" for="">Remarks</label>
+                                    @Html.TextAreaFor(i=>i.Remarks, 2,3, new { @class = "form-control",@required=""})
+
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <br />
+                                    <div>
+                                    </div>
+                                    <div class="ml-auto">
+                                        <br />
+                                        <input class="btn btn-primary" type="submit" value="Submit" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    @if (Model.TimeOff.StatusId == StatusTimeOffEnum.APPROVED.ToString() && Model.CurrentUser.Department.Code == "HRD")
+                    {
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="col-12">
+                                    <label class="form-label" for="">Action</label>
+                                    <select class="form-control" name="ActionSubmit" id="ActionSubmit" required="required">
+                                        <option value="">--- Action ---</option>
+                                        <option value="@StatusTimeOffEnum.FINISHED.ToString()">Finish</option>
+                                    </select>
+
+                                </div>
+
+                                <div class="d-flex justify-content-between">
+                                    <br />
+                                    <div>
+                                    </div>
+                                    <div class="ml-auto">
+                                        <br />
+                                        <input class="btn btn-primary" type="submit" value="Submit" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <h4>History Detail Paid Leave</h4>
+                </div>
+                <div class="ml-auto">
+                    @* <a href="@Url.Action("List","PaidLeave")"> Back to List</a> *@
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Date</th>
+                                        <th scope="col">User</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Remarks</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.TimeOffHistories)
+                                    {
+                                        <tr>
+                                            <td>@item.CreatedDate.ToString("yyyy-MM-dd HH:mm")</td>
+                                            <td>@item.UserFullName</td>
+                                            <td>@item.StatusId</td>
+                                            <td>@item.Remarks</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+
+
+}

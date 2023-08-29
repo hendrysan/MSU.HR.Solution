@@ -397,6 +397,22 @@ namespace MSU.HR.Services.Repositories
             }
         }
 
+        public async Task<IEnumerable<TimeOff>?> GetPendingApprovalTimeOffsAsync()
+        {
+            try
+            {
+                string code = userIdentity.Code;
+                var status = StatusTimeOffEnum.REQUESTED.ToString();
+                var trx = await _context.TimeOffs.Where(i => i.StatusId == status && i.ApprovedBy == code).Include(r => r.Reason).ToListAsync();
+                return trx.OrderByDescending(i => i.CreatedDate).ToList();
+            }
+            catch (Exception ex)
+            {
+                await _logError.SaveAsync(ex, JsonSerializer.Serialize(""));
+                throw new Exception("Time Off GetPendingApprovalTimeOffsAsync Error : " + ex.Message);
+            }
+        }
+
         public async Task<IEnumerable<TimeOff>?> GetPendingFinishTimeOffsAsync()
         {
             try
@@ -430,11 +446,13 @@ namespace MSU.HR.Services.Repositories
                 var result = new TimeOffSummaryModel();
                 var timeOffs = await _context.TimeOffs.Where(i => i.UserCode == code && i.StartDate.Year == year).Include(i => i.Reason).ToListAsync();
                 result.Year = year;
-                result.ReminingBalance = (await this.GetCountLeaveAllowanceAsync(timeOffs.First().UserId)).Total;
+                result.ReminingBalance = 0;
                 result.UserCode = code;
+                result.Details = new List<TimeOffSummaryDetailModel>();
 
                 if (timeOffs.Count > 0)
                 {
+                    result.ReminingBalance = (await this.GetCountLeaveAllowanceAsync(timeOffs.First().UserId)).Total;
                     result.TotalTaken = timeOffs.Where(i => ListStatusTimeOffAllowed.Contains(i.StatusId)).Sum(i => i.Taken);
                     result.Status = timeOffs.Select(i => i.StatusId).Distinct().OrderBy(i => i).ToList();
                     result.Details = timeOffs.Select(i => new TimeOffSummaryDetailModel()
@@ -444,7 +462,7 @@ namespace MSU.HR.Services.Repositories
                         StartDate = i.StartDate,
                         ReasonName = i.Reason?.Name ?? string.Empty,
                         Taken = i.Taken,
-                        Status = Enum.GetName(enumType: typeof(StatusTimeOffEnum), i.StatusId) ?? string.Empty,
+                        Status = i.StatusId
                     }).OrderBy(i => new { i.Status, i.StartDate }).ToList();
                 }
 

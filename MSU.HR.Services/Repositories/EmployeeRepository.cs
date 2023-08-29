@@ -317,7 +317,16 @@ namespace MSU.HR.Services.Repositories
 
         public async Task<Employee?> GetEmployeeAsync(string code)
         {
-            var employee = await _context.Employees.Where(i => i.IsActive == true && i.Code == code).FirstOrDefaultAsync();
+            var employee = await _context.Employees.Where(i => i.IsActive == true && i.Code == code)
+                 .Include(i => i.Bank)
+                 .Include(i => i.Department)
+                 .Include(i => i.Education)
+                 .Include(i => i.Grade)
+                 .Include(i => i.Job)
+                 .Include(i => i.PTKP)
+                 .Include(i => i.Section)
+                 .Include(i => i.TypeEmployee)
+                 .FirstOrDefaultAsync();
             return employee;
             //if (find == null)
             //    return 0;
