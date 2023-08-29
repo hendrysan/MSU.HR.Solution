@@ -464,10 +464,10 @@ namespace MSU.HR.Services.Repositories
                         Taken = i.Taken,
                         Status = i.StatusId,
                         ApproveDate = i.ApprovedDate,
-                        Remarks = i.ApprovedRemarks,
-                        Approver = _context.Employees.Where(e => e.Code == i.ApprovedBy).Select(e => e.Name).FirstOrDefault(),
-                        LastUpdateDate = _context.TimeOffHistories.Where(h => h.TimeOffId == i.Id).OrderByDescending(h => h.CreatedDate).Select(h => h.CreatedDate).FirstOrDefault()
-                    }).OrderBy(i => new { i.Status, i.StartDate }).ToList();
+                        Remarks = i.ApprovedRemarks ?? string.Empty,
+                        Approver = i.ApprovedBy, //_context.Employees.Where(e => e.Code == i.ApprovedBy).FirstOrDefault()?.Name,
+                        LastUpdateDate = i.ApprovedDate ?? i.CreatedDate
+                    }).ToList();
                 }
 
                 return result;
