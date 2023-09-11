@@ -9,6 +9,7 @@ using MSU.HR.Models.Paginations;
 using MSU.HR.Models.Requests;
 using MSU.HR.Models.Responses;
 using MSU.HR.Services.Interfaces;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Security.Claims;
 using System.Text.Json;
@@ -185,15 +186,31 @@ namespace MSU.HR.Services.Repositories
                 x.Size.ToLower().Contains(request.searchValue.ToLower()) ||
                 x.Type.ToLower().Contains(request.searchValue.ToLower()));
             }
-            // get total count of records after search
+
             filterRecord = data.Count();
-            //sort data
+
             if (!string.IsNullOrEmpty(request.sortColumn) && !string.IsNullOrEmpty(request.sortColumnDirection))
             {
-                //data = data.OrderBy(request.sortColumn + " " + request.sortColumnDirection);
-                data.OrderByDescending(x => x.DocumentDate);
+                switch (request.sortColumn)
+                {
+                    case nameof(DocumentAttendance.DocumentName):
+                        data = request.sortColumnDirection == "desc" ? data.OrderByDescending(x => x.DocumentName) : data.OrderBy(x => x.DocumentName);
+                        break;
+                    case nameof(DocumentAttendance.Status):
+                        data = request.sortColumnDirection == "desc" ? data.OrderByDescending(x => x.Status) : data.OrderBy(x => x.Status);
+                        break;
+                    case nameof(DocumentAttendance.Size):
+                        data = request.sortColumnDirection == "desc" ? data.OrderByDescending(x => x.Size) : data.OrderBy(x => x.Size);
+                        break;
+                    case nameof(DocumentAttendance.Type):
+                        data = request.sortColumnDirection == "desc" ? data.OrderByDescending(x => x.Type) : data.OrderBy(x => x.Type);
+                        break;
+                    default:
+                        data = request.sortColumnDirection == "desc" ? data.OrderByDescending(x => x.CreatedDate) : data.OrderBy(x => x.CreatedDate);
+                        break;
+                }
             }
-            //pagination
+
             var list = data.Skip(request.skip).Take(request.pageSize).ToList();
 
             response.draw = request.draw;
@@ -204,6 +221,8 @@ namespace MSU.HR.Services.Repositories
             return response;
         }
 
+
+
         public async Task<DataTableResponse> GetDataTableDocumentDetailResponseAsync(DataTableRequest request, Guid id)
         {
             DataTableResponse response = new DataTableResponse();
@@ -211,9 +230,53 @@ namespace MSU.HR.Services.Repositories
             int filterRecord = 0;
 
             var data = _context.Set<DocumentAttendanceDetail>().Where(i => i.DocumentAttendanceId == id).AsQueryable();
-            //get total count of data in table
+
             totalRecord = data.Count();
-            // search data when search value found
+
+            if (!string.IsNullOrEmpty(request.sortColumn) && !string.IsNullOrEmpty(request.sortColumnDirection))
+            {
+                switch (request.sortColumn)
+                {
+                    case nameof(DocumentAttendanceDetail.Column0):
+                        data = request.sortColumnDirection == "desc" ? data.OrderByDescending(x => x.Column0) : data.OrderBy(x => x.Column0);
+                        break;
+                    case nameof(DocumentAttendanceDetail.Column1):
+                        data = request.sortColumnDirection == "desc" ? data.OrderByDescending(x => x.Column1) : data.OrderBy(x => x.Column1);
+                        break;
+                    case nameof(DocumentAttendanceDetail.Column2):
+                        data = request.sortColumnDirection == "desc" ? data.OrderByDescending(x => x.Column2) : data.OrderBy(x => x.Column2);
+                        break;
+                    case nameof(DocumentAttendanceDetail.Column3):
+                        data = request.sortColumnDirection == "desc" ? data.OrderByDescending(x => x.Column3) : data.OrderBy(x => x.Column3);
+                        break;
+                    case nameof(DocumentAttendanceDetail.Column4):
+                        data = request.sortColumnDirection == "desc" ? data.OrderByDescending(x => x.Column4) : data.OrderBy(x => x.Column4);
+                        break;
+                    case nameof(DocumentAttendanceDetail.Column5):
+                        data = request.sortColumnDirection == "desc" ? data.OrderByDescending(x => x.Column5) : data.OrderBy(x => x.Column5);
+                        break;
+                    case nameof(DocumentAttendanceDetail.Column6):
+                        data = request.sortColumnDirection == "desc" ? data.OrderByDescending(x => x.Column6) : data.OrderBy(x => x.Column6);
+                        break;
+                    case nameof(DocumentAttendanceDetail.Column7):
+                        data = request.sortColumnDirection == "desc" ? data.OrderByDescending(x => x.Column7) : data.OrderBy(x => x.Column7);
+                        break;
+                    case nameof(DocumentAttendanceDetail.Column8):
+                        data = request.sortColumnDirection == "desc" ? data.OrderByDescending(x => x.Column8) : data.OrderBy(x => x.Column8);
+                        break;
+                    case nameof(DocumentAttendanceDetail.Column9):
+                        data = request.sortColumnDirection == "desc" ? data.OrderByDescending(x => x.Column9) : data.OrderBy(x => x.Column9);
+                        break;
+                    case nameof(DocumentAttendanceDetail.Column10):
+                        data = request.sortColumnDirection == "desc" ? data.OrderByDescending(x => x.Column10) : data.OrderBy(x => x.Column10);
+                        break;
+                    default:
+                        data = request.sortColumnDirection == "desc" ? data.OrderByDescending(x => x.Id) : data.OrderBy(x => x.Id);
+                        break;
+                }
+
+            }
+
             if (!string.IsNullOrEmpty(request.searchValue))
             {
                 data = data.Where(x =>
@@ -230,7 +293,7 @@ namespace MSU.HR.Services.Repositories
                 x.Column10.ToLower().Contains(request.searchValue.ToLower())
                 );
             }
-            // get total count of records after search
+
             filterRecord = data.Count();
 
             //pagination
@@ -246,7 +309,7 @@ namespace MSU.HR.Services.Repositories
 
         public async Task<DocumentAttendance> GetDocumentAttendance(Guid id)
         {
-            var data  = await _context.DocumentAttendances.FirstOrDefaultAsync(i => i.Id == id);
+            var data = await _context.DocumentAttendances.FirstOrDefaultAsync(i => i.Id == id);
             return data;
         }
 
@@ -254,9 +317,6 @@ namespace MSU.HR.Services.Repositories
         {
             var data = await _context.DocumentAttendances.FirstOrDefaultAsync(i => i.Id == id);
             data.Status = action;
-
-
-
             var task = await _context.SaveChangesAsync();
 
             return task;

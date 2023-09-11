@@ -105,9 +105,10 @@
                     processing: true,
                     serverSide: true,
                     filter: true,
-                    ordering: false,
+                    // ordering: false,
                     columns: [
                         {
+                            orderable: false,
                             mRender: function (data, type, row) {
                                 return moment(row.documentDate).format("YYYY MMM DD");
                             }
@@ -115,14 +116,29 @@
                         { data: "documentName", name: "DocumentName" },
                         { data: "size", name: "Size" },
                         { data: "type", name: "Type" },
-                        { data: "status", name: "Status" },
                         {
                             mRender: function (data, type, row) {
-                             
-                                if (row.status != "PENDING") {
-                                    return "";
 
+                                if (row.status == "PENDING") {
+                                    return '<span class="badge rounded-pill badge-warning">PENDING</span>';
                                 }
+
+                                if (row.status == "PROCESSED") {
+                                    return '<span class="badge rounded-pill badge-success">PROCESSED</span>';
+                                }
+
+                                if (row.status == "CANCELED") {
+                                    return '<span class="badge rounded-pill badge-danger">CANCELED</span>';
+                                }
+                            }
+                        },
+                        {
+                            mRender: function (data, type, row) {
+
+                                // if (row.status != "PENDING") {
+                                //     return "";
+
+                                // }
                                 var linkDetails = '@Html.ActionLink("Details","DocumentDetails", "Attendance", new {id= -1 })';
                                 linkDetails = linkDetails.replace("-1", row.id);
                                 return linkDetails;
