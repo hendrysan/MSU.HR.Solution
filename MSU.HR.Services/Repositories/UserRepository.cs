@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Mono.Cecil.Cil;
 using MSU.HR.Contexts;
 using MSU.HR.Models.Entities;
 using MSU.HR.Models.Others;
@@ -169,6 +170,17 @@ namespace MSU.HR.Services.Repositories
                 await _logError.SaveAsync(ex, code);
                 throw new Exception("TypeEmployee Create Error : " + ex.Message);
             }
+        }
+
+        public async Task<AspNetUser?> GetProfile(Guid id)
+        {
+            var user = await _context.Users
+                   .Where(u => u.Id == id.ToString())
+                   .Include(r => r.Role)
+                   .Include(c => c.Corporate)
+                   .Include(e => e.Employee)
+                   .FirstOrDefaultAsync();
+            return user;
         }
     }
 }

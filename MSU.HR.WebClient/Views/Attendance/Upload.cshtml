@@ -5,7 +5,7 @@
 
 
 @section Styles{
-
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/assets/css/vendors/datatables.css")">
 }
 
 <div class="col-sm-12">
@@ -23,16 +23,24 @@
         <div>
             <div class="card-body">
                 @Html.Partial("_Alert")
-                <form class="needs-validation" method="post" enctype="multipart/form-data" 
-                asp-controller="Attendance" asp-action="PostUpload">
+                <form class="needs-validation" method="post" enctype="multipart/form-data"
+                      asp-controller="Attendance" asp-action="PostUpload">
                     @Html.AntiForgeryToken()
-                   
+
                     <div class="row">
                         <div class="col-12">
+
+                            <h5>Document Information</h5>
+                            <br />
+                            <div class="col-12">
+                                <label class="form-label" for="">Document Date</label>
+                                <input class="form-control" type="date" required name="DocumentDate" id="DocumentDate" />
+                                @* @Html.TextBoxFor(i=>i.StartDate, htmlAttributes: new { @class = "form-control", @type="date",@required=""}) *@
+                            </div>
                             <div class="col-12">
                                 <label class="form-label" for="">File</label>
                                 @* @Html.TextAreaFor(i=>i.Notes, 2,3, new { @class = "form-control"}) *@
-                                <input type="file" name="postedFile" />
+                                <input class="form-control" type="file" name="postedFile" required />
                             </div>
                             <div class="d-flex justify-content-between">
                                 <br />
@@ -41,17 +49,89 @@
                                 <div class="ml-auto">
                                     <br />
                                     <input class="btn btn-primary" type="submit" value="Submit" />
+                                    <br />
+                                    <br />
                                 </div>
                             </div>
                         </div>
                     </div>
                 </form>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-header pb-0 card-no-border">
+                                <h4 class="mb-3">History Document Uploaded</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="display" id="data-document" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>Document Date</th>
+                                                <th>Document Name</th>
+                                                <th>Size</th>
+                                                <th>Type</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 @section Scripts{
+    <script src="@Url.Content("~/assets/js/datatable/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/assets/js/moment.min.js")"></script>
 
+    <script>
+        (function ($) {
 
+            $(document).ready(function () {
+
+                $("#data-document").DataTable({
+                    ajax: {
+                        url: "@Url.Action("GetDocumentUpload", "Attendance")",
+                        type: "POST",
+                    },
+                    processing: true,
+                    serverSide: true,
+                    filter: true,
+                    ordering: false,
+                    columns: [
+                        {
+                            mRender: function (data, type, row) {
+                                return moment(row.documentDate).format("YYYY MMM DD");
+                            }
+                        },
+                        { data: "documentName", name: "DocumentName" },
+                        { data: "size", name: "Size" },
+                        { data: "type", name: "Type" },
+                        { data: "status", name: "Status" },
+                        {
+                            mRender: function (data, type, row) {
+                             
+                                if (row.status != "PENDING") {
+                                    return "";
+
+                                }
+                                var linkDetails = '@Html.ActionLink("Details","DocumentDetails", "Attendance", new {id= -1 })';
+                                linkDetails = linkDetails.replace("-1", row.id);
+                                return linkDetails;
+                            }
+                        }
+                    ],
+                });
+            });
+
+        })(jQuery);
+    </script>
 }

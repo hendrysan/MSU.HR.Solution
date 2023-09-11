@@ -32,6 +32,10 @@ namespace MSU.HR.Models.Entities
         [Required]
         public DateTime CreatedDate { get; set; }
 
+
+        [Required]
+        public DateTime DocumentDate { get; set; }
+
         public List<DocumentAttendanceDetail>? Details { get; set; }
     }
 }

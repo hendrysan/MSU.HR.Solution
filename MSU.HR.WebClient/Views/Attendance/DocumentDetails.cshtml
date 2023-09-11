@@ -1,0 +1,166 @@
+﻿@{
+    ViewData["Title"] = "Detail Document Attendance";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+@model MSU.HR.Models.ViewModels.AttendanceDocumentDetailViewModel
+
+@section Styles{
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/assets/css/vendors/datatables.css")">
+}
+
+<div class="col-sm-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <h4>@ViewData["Title"]</h4>
+                </div>
+                <div class="ml-auto">
+                    @* <a href="@Url.Action("List","PaidLeave")"> Back to List</a> *@
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="card-body">
+
+                <form class="needs-validation" method="post" asp-controller="Attendance" asp-action="PostDocumentDetail">
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(i=>i.Id)
+                    
+
+                    <div class="row">
+                        <div class="col-6">
+                            <h5>Document Information</h5>
+                            <br />
+                            <div class="col-12">
+                                <label class="form-label" for="">Document Date</label>
+                                @Html.TextBoxFor(i=>i.DocumentAttendance.DocumentDate, "{0:yyyy MMM dd}", new { @class = "form-control disabled", @readonly = "readonly" })
+
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" for="">Document Name</label>
+                                @Html.TextBoxFor(i=>i.DocumentAttendance.DocumentName, new { @class = "form-control disabled", @readonly = "readonly" })
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label" for="">Size</label>
+                                @Html.TextBoxFor(i=>i.DocumentAttendance.Size, new { @class = "form-control disabled", @readonly = "readonly" })
+                            </div>
+
+                        </div>
+                        <div class="col-6">
+                            <div class="col-12">
+                                <label class="form-label" for="">Upload By</label>
+                                @Html.TextBoxFor(i=>i.User.FullName, new { @class = "form-control disabled", @readonly = "readonly" })
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label" for="">Upload Date</label>
+                                @Html.TextBoxFor(i=>i.DocumentAttendance.CreatedDate, new { @class = "form-control disabled", @readonly = "readonly" })
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label" for="">Action</label>
+                                <select class="form-control" name="Action" id="Action" required>
+                                    <option value="">-- SELECT --</option>
+                                    <option value="CANCELED">CANCEL</option>
+                                    <option value="PROCESSED">PROCESS</option>
+
+                                </select>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <br />
+                                <div>
+                                </div>
+                                <div class="ml-auto">
+                                    <br />
+                                    @Html.ActionLink("Back","Upload","Attendance", new { }, new { @class = "btn btn-link" })
+                                    <input class="btn btn-primary" type="submit" value="Submit" />
+                                    <br />
+                                    <br />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-header pb-0 card-no-border">
+                                <h4 class="mb-3">Detail Document Uploaded</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="display" id="data-document" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>Column 0</th>
+                                                <th>Column 1</th>
+                                                <th>Column 2</th>
+                                                <th>Column 3</th>
+                                                <th>Column 4</th>
+                                                <th>Column 5</th>
+                                                <th>Column 6</th>
+                                                <th>Column 7</th>
+                                                <th>Column 8</th>
+                                                <th>Column 9</th>
+                                                <th>Column 10</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="@Url.Content("~/assets/js/datatable/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/assets/js/moment.min.js")"></script>
+
+    <script>
+        (function ($) {
+
+            $(document).ready(function () {
+
+                $("#data-document").DataTable({
+                    ajax: {
+                        url: "@Url.Action("GetDetailDocumentUpload", "Attendance")/@Model.DocumentAttendance.Id",
+                        type: "POST",
+                    },
+                    processing: true,
+                    serverSide: true,
+                    filter: true,
+                    ordering: false,
+                    columns: [
+                        { data: "column0", name: "Column0" },
+                        { data: "column1", name: "Column1" },
+                        { data: "column2", name: "Column2" },
+                        { data: "column3", name: "Column3" },
+                        { data: "column4", name: "Column4" },
+                        { data: "column5", name: "Column5" },
+                        { data: "column6", name: "Column6" },
+                        { data: "column7", name: "Column7" },
+                        { data: "column8", name: "Column8" },
+                        { data: "column9", name: "Column9" },
+                        { data: "column10", name: "Column10" },
+
+                    ],
+                });
+            });
+
+        })(jQuery);
+
+
+
+
+    </script>
+}

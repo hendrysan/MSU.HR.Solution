@@ -1,9 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.EntityFrameworkCore;
 using MSU.HR.Commons.Enums;
 using MSU.HR.Contexts;
 using MSU.HR.Models.Entities;
 using MSU.HR.Models.Others;
+using MSU.HR.Models.Paginations;
+using MSU.HR.Models.Requests;
+using MSU.HR.Models.Responses;
 using MSU.HR.Services.Interfaces;
 using System.Reflection;
 using System.Security.Claims;
@@ -120,7 +124,7 @@ namespace MSU.HR.Services.Repositories
             }
         }
 
-        public async Task<int> UploadAsync(IFormFile file)
+        public async Task<int> UploadAsync(IFormFile file, DateTime DocumentDate)
         {
             try
             {
@@ -138,7 +142,8 @@ namespace MSU.HR.Services.Repositories
                     Status = StatusDocumentAttendanceEnum.PENDING.ToString(),
                     Remarks = "",
                     CreatedBy = userIdentity.Id,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = DateTime.Now,
+                    DocumentDate = DocumentDate
                 };
 
                 _context.DocumentAttendances.Add(documentAttendance);
@@ -155,6 +160,106 @@ namespace MSU.HR.Services.Repositories
 
                 throw new Exception("Bank CheckCodeExistsAsync Error : " + ex.Message);
             }
+        }
+
+        public Task<DocumentAttendancePagination> GetAttendanceAsync(string search, PaginationModel pagination)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<DataTableResponse> GetDataTableDocumentResponseAsync(DataTableRequest request)
+        {
+            DataTableResponse response = new DataTableResponse();
+            int totalRecord = 0;
+            int filterRecord = 0;
+
+            var data = _context.Set<DocumentAttendance>().AsQueryable();
+            //get total count of data in table
+            totalRecord = data.Count();
+            // search data when search value found
+            if (!string.IsNullOrEmpty(request.searchValue))
+            {
+                data = data.Where(x =>
+                x.DocumentName.ToLower().Contains(request.searchValue.ToLower()) ||
+                x.Status.ToLower().Contains(request.searchValue.ToLower()) ||
+                x.Size.ToLower().Contains(request.searchValue.ToLower()) ||
+                x.Type.ToLower().Contains(request.searchValue.ToLower()));
+            }
+            // get total count of records after search
+            filterRecord = data.Count();
+            //sort data
+            if (!string.IsNullOrEmpty(request.sortColumn) && !string.IsNullOrEmpty(request.sortColumnDirection))
+            {
+                //data = data.OrderBy(request.sortColumn + " " + request.sortColumnDirection);
+                data.OrderByDescending(x => x.DocumentDate);
+            }
+            //pagination
+            var list = data.Skip(request.skip).Take(request.pageSize).ToList();
+
+            response.draw = request.draw;
+            response.recordsTotal = totalRecord;
+            response.recordsFiltered = filterRecord;
+            response.data = list;
+
+            return response;
+        }
+
+        public async Task<DataTableResponse> GetDataTableDocumentDetailResponseAsync(DataTableRequest request, Guid id)
+        {
+            DataTableResponse response = new DataTableResponse();
+            int totalRecord = 0;
+            int filterRecord = 0;
+
+            var data = _context.Set<DocumentAttendanceDetail>().Where(i => i.DocumentAttendanceId == id).AsQueryable();
+            //get total count of data in table
+            totalRecord = data.Count();
+            // search data when search value found
+            if (!string.IsNullOrEmpty(request.searchValue))
+            {
+                data = data.Where(x =>
+                x.Column0.ToLower().Contains(request.searchValue.ToLower()) ||
+                x.Column1.ToLower().Contains(request.searchValue.ToLower()) ||
+                x.Column2.ToLower().Contains(request.searchValue.ToLower()) ||
+                x.Column3.ToLower().Contains(request.searchValue.ToLower()) ||
+                x.Column4.ToLower().Contains(request.searchValue.ToLower()) ||
+                x.Column5.ToLower().Contains(request.searchValue.ToLower()) ||
+                x.Column6.ToLower().Contains(request.searchValue.ToLower()) ||
+                x.Column7.ToLower().Contains(request.searchValue.ToLower()) ||
+                x.Column8.ToLower().Contains(request.searchValue.ToLower()) ||
+                x.Column9.ToLower().Contains(request.searchValue.ToLower()) ||
+                x.Column10.ToLower().Contains(request.searchValue.ToLower())
+                );
+            }
+            // get total count of records after search
+            filterRecord = data.Count();
+
+            //pagination
+            var list = await data.Skip(request.skip).Take(request.pageSize).ToListAsync();
+
+            response.draw = request.draw;
+            response.recordsTotal = totalRecord;
+            response.recordsFiltered = filterRecord;
+            response.data = list;
+
+            return response;
+        }
+
+        public async Task<DocumentAttendance> GetDocumentAttendance(Guid id)
+        {
+            var data  = await _context.DocumentAttendances.FirstOrDefaultAsync(i => i.Id == id);
+            return data;
+        }
+
+        public async Task<int> ActionDocumentUploadAsync(Guid id, string action)
+        {
+            var data = await _context.DocumentAttendances.FirstOrDefaultAsync(i => i.Id == id);
+            data.Status = action;
+
+
+
+            var task = await _context.SaveChangesAsync();
+
+            return task;
         }
     }
 }
