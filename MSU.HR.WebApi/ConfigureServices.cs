@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using MSU.HR.Contexts;
 using MSU.HR.Models.Entities;
 using MSU.HR.Models.Others;
+using MSU.HR.Services;
 using MSU.HR.Services.Interfaces;
 using MSU.HR.Services.Repositories;
 using System.Text;
@@ -143,27 +144,7 @@ namespace MSU.HR.WebApi
             });
 
             services.AddHttpContextAccessor();
-
-            //builder.Services.AddScoped<IResponse, ResponseRepository>();
-            services.AddScoped<IUser, UserRepository>();
-            services.AddScoped<IToken, TokenRepository>();
-            services.AddScoped<ILogError, LogErrorRepository>();
-            services.AddScoped<ICorporate, CorporateRepository>();
-            services.AddScoped<IBank, BankRepository>();
-            services.AddScoped<IDepartment, DepartmentRepository>();
-            services.AddScoped<IEducation, EducationRepository>();
-            services.AddScoped<IGrade, GradeRepository>();
-            services.AddScoped<IJob, JobRepository>();
-            services.AddScoped<IReason, ReasonRepository>();
-            services.AddScoped<ISection, SectionRepository>();
-            services.AddScoped<ITypeEmployee, TypeEmployeeRepository>();
-            services.AddScoped<IPTKP, PTKPRepository>();
-            services.AddScoped<IRole, RoleRepository>();
-            services.AddScoped<IEmployee, EmployeeRepository>();
-
-            services.AddScoped<ITimeOff, TimeOffRepository>();
-
-
+            services.AddInterfaceServices(configuration);
 
             return services;
         }

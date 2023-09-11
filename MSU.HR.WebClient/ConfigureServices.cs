@@ -1,7 +1,6 @@
 ﻿using MSU.HR.Contexts;
 using MSU.HR.Models.Entities;
-using MSU.HR.Services.Interfaces;
-using MSU.HR.Services.Repositories;
+using MSU.HR.Services;
 
 namespace MSU.HR.WebClient
 {
@@ -44,24 +43,7 @@ namespace MSU.HR.WebClient
 
             services.AddMvc();
             services.AddHttpContextAccessor();
-                        
-            services.AddScoped<ILogError, LogErrorRepository>();
-            services.AddScoped<IToken, TokenRepository>();
-            services.AddScoped<IUser, UserRepository>();
-            services.AddScoped<ICorporate, CorporateRepository>();
-            services.AddScoped<IBank, BankRepository>();
-            services.AddScoped<IDepartment, DepartmentRepository>();
-            services.AddScoped<IEducation, EducationRepository>();
-            services.AddScoped<IGrade, GradeRepository>();
-            services.AddScoped<IJob, JobRepository>();
-            services.AddScoped<IReason, ReasonRepository>();
-            services.AddScoped<ISection, SectionRepository>();
-            services.AddScoped<ITypeEmployee, TypeEmployeeRepository>();
-            services.AddScoped<IPTKP, PTKPRepository>();
-            services.AddScoped<IRole, RoleRepository>();
-            services.AddScoped<IEmployee, EmployeeRepository>();
-
-            services.AddScoped<ITimeOff, TimeOffRepository>();
+            services.AddInterfaceServices(configuration);
 
             return services;
         }

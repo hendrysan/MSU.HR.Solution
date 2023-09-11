@@ -1,0 +1,57 @@
+﻿@{
+    ViewData["Title"] = "Upload document Attendance";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+
+@section Styles{
+
+}
+
+<div class="col-sm-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <h4>@ViewData["Title"]</h4>
+                </div>
+                <div class="ml-auto">
+                    @* <a href="@Url.Action("List","PaidLeave")"> Back to List</a> *@
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="card-body">
+                @Html.Partial("_Alert")
+                <form class="needs-validation" method="post" enctype="multipart/form-data" 
+                asp-controller="Attendance" asp-action="PostUpload">
+                    @Html.AntiForgeryToken()
+                   
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="col-12">
+                                <label class="form-label" for="">File</label>
+                                @* @Html.TextAreaFor(i=>i.Notes, 2,3, new { @class = "form-control"}) *@
+                                <input type="file" name="postedFile" />
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <br />
+                                <div>
+                                </div>
+                                <div class="ml-auto">
+                                    <br />
+                                    <input class="btn btn-primary" type="submit" value="Submit" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+
+
+}

@@ -8,4 +8,11 @@
         EXPIRED,
         FINISHED
     }
+
+    public enum StatusDocumentAttendanceEnum
+    {
+        PENDING,        
+        CANCELED,
+        PROCESSED,
+    }
 }

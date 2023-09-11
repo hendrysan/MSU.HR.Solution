@@ -7,6 +7,7 @@ namespace MSU.HR.Contexts
 {
     public class DatabaseContext : IdentityUserContext<AspNetUser>
     {
+        private readonly IConfiguration _configuration;
         public DatabaseContext(DbContextOptions<DatabaseContext> options, IConfiguration configuration) : base(options)
         {
             _configuration = configuration;
@@ -35,14 +36,16 @@ namespace MSU.HR.Contexts
         public DbSet<TimeOff> TimeOffs { get; set; }
         public DbSet<TimeOffHistory> TimeOffHistories { get; set; }
         public DbSet<TypeEmployee> TypeEmployees { get; set; }
+        public DbSet<DocumentAttendance> DocumentAttendances { get; set; }
+        public DbSet<DocumentAttendanceDetail> DocumentAttendanceDetails { get; set; }
 
-        private readonly IConfiguration _configuration;
+        
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             var connectionUsed = _configuration.GetSection("ConnectionUsed").Value.ToString().ToLower();
-            string connectionString = "";// "server=localhost; port=3306; database=dbpayroll; user=root; password=abcd.1234; Persist Security Info=False; Connect Timeout=300";
-
+            string connectionString = string.Empty;// "server=localhost; port=3306; database=dbpayroll; user=root; password=abcd.1234; Persist Security Info=False; Connect Timeout=300";
+            //string connectionString = "server=localhost; port=3306; database=dbpayroll; user=root; password=abcd.1234; Persist Security Info=False; Connect Timeout=300";
             if (connectionUsed == "mysql")
             {
                 connectionString = _configuration.GetConnectionString("MySQLConnection");
