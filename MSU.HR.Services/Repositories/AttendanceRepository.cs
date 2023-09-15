@@ -164,7 +164,7 @@ namespace MSU.HR.Services.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<DataTableResponse> GetDataTableDocumentResponseAsync(DataTableRequest request)
+        public async Task<DataTableResponse> GetDataTableDocumentAsync(DataTableRequest request)
         {
             DataTableResponse response = new DataTableResponse();
             int totalRecord = 0;
@@ -219,7 +219,7 @@ namespace MSU.HR.Services.Repositories
 
 
 
-        public async Task<DataTableResponse> GetDataTableDocumentDetailResponseAsync(DataTableRequest request, Guid id)
+        public async Task<DataTableResponse> GetDataTableDocumentDetailAsync(DataTableRequest request, Guid id)
         {
             DataTableResponse response = new DataTableResponse();
             int totalRecord = 0;

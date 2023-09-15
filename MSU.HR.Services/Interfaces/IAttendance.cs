@@ -10,8 +10,8 @@ namespace MSU.HR.Services.Interfaces
     {
         Task<DocumentAttendance> GetDocumentAttendance(Guid id);
         Task<int> UploadAsync(IFormFile file, DateTime DocumentDate);
-        Task<DataTableResponse> GetDataTableDocumentResponseAsync(DataTableRequest request);
-        Task<DataTableResponse> GetDataTableDocumentDetailResponseAsync(DataTableRequest request, Guid id);
+        Task<DataTableResponse> GetDataTableDocumentAsync(DataTableRequest request);
+        Task<DataTableResponse> GetDataTableDocumentDetailAsync(DataTableRequest request, Guid id);
 
         Task<int> ActionDocumentUploadAsync(Guid id, string action);
 

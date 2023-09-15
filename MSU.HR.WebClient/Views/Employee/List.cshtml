@@ -1,0 +1,91 @@
+﻿@{
+    ViewData["Title"] = "Management Employee";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+
+@section Styles{
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/assets/css/vendors/datatables.css")">
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/assets/css/style.css")">
+}
+
+<div class="col-sm-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <h4>@ViewData["Title"]</h4>
+                </div>
+                <div class="ml-auto">
+                    @* <a href="@Url.Action("List","PaidLeave")"> Back to List</a> *@
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    @* <div class="card-header pb-0 card-no-border">
+                    <h4 class="mb-3">History Document Uploaded</h4>
+                    </div> *@
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="display" id="data-document" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Code</th>
+                                        <th>Name</th>
+                                        <th>Department</th>
+                                        <th>Section</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="@Url.Content("~/assets/js/datatable/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/assets/js/moment.min.js")"></script>
+
+    <script>
+        (function ($) {
+
+            $(document).ready(function () {
+
+                $("#data-document").DataTable({
+                    ajax: {
+                        url: "@Url.Action("GetDataTableEmployee", "Employee")",
+                        type: "POST",
+                    },
+                    processing: true,
+                    serverSide: true,
+                    filter: true,
+                    // ordering: false,
+                    columns: [
+                        {
+                            data: "code", name: "Code"
+                        },
+                        { data: "name", name: "Name" },
+                        { data: "department.name", name: "Department" },
+                        { data: "section.name", name: "Section" },
+                        {
+                            mRender: function (data, type, row) {
+                                console.log(row);
+                                var linkDetails = '@Html.ActionLink("Details","Detail", "Employee", new {id= -1 })';
+                                linkDetails = linkDetails.replace("-1", row.id);
+                                return linkDetails;
+                            }
+                        }
+                    ],
+                });
+            });
+
+        })(jQuery);
+    </script>
+}

@@ -6,6 +6,7 @@ using MSU.HR.Models.Entities;
 using MSU.HR.Models.Others;
 using MSU.HR.Models.Paginations;
 using MSU.HR.Models.Requests;
+using MSU.HR.Models.Responses;
 using MSU.HR.Services.Interfaces;
 using System.Security.Claims;
 using System.Text.Json;
@@ -330,6 +331,65 @@ namespace MSU.HR.Services.Repositories
             return employee;
             //if (find == null)
             //    return 0;
+        }
+
+        public async Task<DataTableResponse> GetDataTableEmployeeAsync(DataTableRequest request)
+        {
+            DataTableResponse response = new DataTableResponse();
+            int totalRecord = 0;
+            int filterRecord = 0;
+
+            var data = _context.Set<Employee>()
+                .Include(i => i.Department)
+                .Include(i => i.Section)
+                .AsQueryable();
+
+            totalRecord = data.Count();
+
+            if (!string.IsNullOrEmpty(request.searchValue))
+            {
+                data = data.Where(x =>
+                x.Code.ToLower().Contains(request.searchValue.ToLower()) ||
+                x.Name.ToLower().Contains(request.searchValue.ToLower())
+                );
+
+                data = data.Where(x => x.Department != null && x.Department.Name.ToLower().Contains(request.searchValue.ToLower()));
+                data = data.Where(x => x.Section != null && x.Section.Name.ToLower().Contains(request.searchValue.ToLower()));
+
+            }
+
+            filterRecord = data.Count();
+
+            if (!string.IsNullOrEmpty(request.sortColumn) && !string.IsNullOrEmpty(request.sortColumnDirection))
+            {
+                switch (request.sortColumn)
+                {
+                    case nameof(Employee.Code):
+                        data = request.sortColumnDirection == "desc" ? data.OrderByDescending(x => x.Code) : data.OrderBy(x => x.Code);
+                        break;
+                    case nameof(Employee.Name):
+                        data = request.sortColumnDirection == "desc" ? data.OrderByDescending(x => x.Name) : data.OrderBy(x => x.Name);
+                        break;
+                    case nameof(Employee.Department):
+                        data = request.sortColumnDirection == "desc" ? data.OrderByDescending(x => x.Department) : data.OrderBy(x => x.Department);
+                        break;
+                    case nameof(Employee.Section):
+                        data = request.sortColumnDirection == "desc" ? data.OrderByDescending(x => x.Section) : data.OrderBy(x => x.Section);
+                        break;
+                    default:
+                        data = request.sortColumnDirection == "desc" ? data.OrderByDescending(x => x.CreatedDate) : data.OrderBy(x => x.CreatedDate);
+                        break;
+                }
+            }
+
+            var list = data.Skip(request.skip).Take(request.pageSize).ToList();
+
+            response.draw = request.draw;
+            response.recordsTotal = totalRecord;
+            response.recordsFiltered = filterRecord;
+            response.data = list;
+
+            return response;
         }
     }
 }

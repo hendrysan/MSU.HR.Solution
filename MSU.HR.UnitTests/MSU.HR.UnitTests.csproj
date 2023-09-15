@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
+    <PackageReference Include="Moq" Version="4.20.69" />
+    <PackageReference Include="xunit" Version="2.4.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="coverlet.collector" Version="3.2.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MSU.HR.Contexts\MSU.HR.Contexts.csproj" />
+    <ProjectReference Include="..\MSU.HR.Models\MSU.HR.Models.csproj" />
+    <ProjectReference Include="..\MSU.HR.Services\MSU.HR.Services.csproj" />
+    <ProjectReference Include="..\MSU.HR.WebApi\MSU.HR.WebApi.csproj" />
+    <ProjectReference Include="..\MSU.HR.WebClient\MSU.HR.WebClient.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="WebClients\" />
+    <Folder Include="WebApi\" />
+  </ItemGroup>
+
+</Project>

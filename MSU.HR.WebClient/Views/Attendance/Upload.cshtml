@@ -135,11 +135,6 @@
                         },
                         {
                             mRender: function (data, type, row) {
-
-                                // if (row.status != "PENDING") {
-                                //     return "";
-
-                                // }
                                 var linkDetails = '@Html.ActionLink("Details","DocumentDetails", "Attendance", new {id= -1 })';
                                 linkDetails = linkDetails.replace("-1", row.id);
                                 return linkDetails;

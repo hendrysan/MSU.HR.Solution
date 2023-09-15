@@ -2,6 +2,7 @@
 using MSU.HR.Models.Others;
 using MSU.HR.Models.Paginations;
 using MSU.HR.Models.Requests;
+using MSU.HR.Models.Responses;
 
 namespace MSU.HR.Services.Interfaces
 {
@@ -17,5 +18,7 @@ namespace MSU.HR.Services.Interfaces
         Task<int> UpdateAsync(Guid id, EmployeeRequest request);
         Task<int> DeleteAsync(Guid id);
         Task<bool> CheckCodeExistsAsync(string code);
+
+        Task<DataTableResponse> GetDataTableEmployeeAsync(DataTableRequest request);
     }
 }

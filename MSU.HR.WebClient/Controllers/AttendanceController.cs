@@ -144,7 +144,7 @@ namespace MSU.HR.WebClient.Controllers
                 skip = skip
             };
 
-            var dataTable = await _attendance.GetDataTableDocumentResponseAsync(request);
+            var dataTable = await _attendance.GetDataTableDocumentAsync(request);
 
             var returnObj = Json(dataTable);
             return returnObj;
@@ -170,7 +170,7 @@ namespace MSU.HR.WebClient.Controllers
                 skip = skip
             };
 
-            var dataTable = await _attendance.GetDataTableDocumentDetailResponseAsync(request, id);
+            var dataTable = await _attendance.GetDataTableDocumentDetailAsync(request, id);
 
             var returnObj = Json(dataTable);
             return returnObj;
