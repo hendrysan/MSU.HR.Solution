@@ -7,9 +7,9 @@ using MSU.HR.Models.Entities;
 using MSU.HR.Models.Others;
 using MSU.HR.Services.Interfaces;
 using MySql.Data.MySqlClient;
-using Org.BouncyCastle.Asn1.Ocsp;
 using System.Data;
 using System.Security.Claims;
+using System.Text.Json;
 
 namespace MSU.HR.Services.Repositories
 {
@@ -27,13 +27,14 @@ namespace MSU.HR.Services.Repositories
             _configuration = configuration;
         }
 
-        public async Task<int> SaveAsync(Exception ex, string body)
+        public async Task<int> SaveAsync(Exception ex, object body)
         {
             var connectionString = _configuration.GetConnectionString("MySQLConnection");
             using IDbConnection connection = new MySqlConnection(connectionString);
 
             LogError entity = new LogError();
             var httpContext = _httpContextAccessor.HttpContext;
+            string _body = JsonSerializer.Serialize(body);
 
             if (httpContext != null)
             {
@@ -66,9 +67,9 @@ namespace MSU.HR.Services.Repositories
             entity.Message = msg;
             entity.Type = type;
             entity.Source = src;
-            
-            entity.ParameterBody = body;
-            
+
+            entity.ParameterBody = _body;
+
 
             entity.UserAgent = userIdentity.Id.ToString();
             entity.CreatedDate = DateTime.Now;

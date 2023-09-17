@@ -7,7 +7,6 @@ using MSU.HR.Models.Others;
 using MSU.HR.Models.Paginations;
 using MSU.HR.Services.Interfaces;
 using System.Security.Claims;
-using System.Text.Json;
 
 namespace MSU.HR.Services.Repositories
 {
@@ -35,7 +34,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(code));
+                await _logError.SaveAsync(ex, new { code = code });
                 throw new Exception("Bank CheckCodeExistsAsync Error : " + ex.Message);
             }
         }
@@ -54,7 +53,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(entity));
+                await _logError.SaveAsync(ex, entity);
                 throw new Exception("Education Create Error : " + ex.Message);
             }
         }
@@ -75,7 +74,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(id));
+                await _logError.SaveAsync(ex, new { id = id });
                 throw new Exception("Education Delete Error : " + ex.Message);
             }
         }
@@ -89,7 +88,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(id));
+                await _logError.SaveAsync(ex, new { id = id });
                 throw new Exception("Education Find Error : " + ex.Message);
             }
         }
@@ -112,7 +111,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, string.Empty);
+                await _logError.SaveAsync(ex, new { search = search, pagination = pagination });
                 throw new Exception("Education Pagination Error : " + ex.Message);
             }
         }
@@ -170,7 +169,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, string.Empty);
+                await _logError.SaveAsync(ex, new { id = id, entity = entity });
                 throw new Exception("Education Update Error : " + ex.Message);
             }
         }

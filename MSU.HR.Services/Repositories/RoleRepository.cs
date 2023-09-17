@@ -36,7 +36,7 @@ namespace MSU.HR.Services.Repositories
             catch (Exception ex)
             {
                 await _logError.SaveAsync(ex, JsonSerializer.Serialize(code));
-                throw new Exception("Bank CheckCodeExistsAsync Error : " + ex.Message);
+                throw new Exception("Role CheckCodeExistsAsync Error : " + ex.Message);
             }
         }
 
@@ -55,7 +55,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(entity));
+                await _logError.SaveAsync(ex, entity);
                 throw new Exception("Role Create Error : " + ex.Message);
             }
         }
@@ -76,7 +76,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(id));
+                await _logError.SaveAsync(ex, new { id = id });
                 throw new Exception("Role Delete Error : " + ex.Message);
             }
         }
@@ -90,7 +90,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(id));
+                await _logError.SaveAsync(ex, new { id = id });
                 throw new Exception("Role Find Error : " + ex.Message);
             }
         }
@@ -111,7 +111,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, string.Empty);
+                await _logError.SaveAsync(ex, new { search = search, pagination = pagination });
                 throw new Exception("Role Pagination Error : " + ex.Message);
             }
         }
@@ -168,7 +168,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, string.Empty);
+                await _logError.SaveAsync(ex, new { id = id, entity = entity });
                 throw new Exception("Role Update Error : " + ex.Message);
             }
         }

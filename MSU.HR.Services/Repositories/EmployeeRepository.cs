@@ -9,7 +9,6 @@ using MSU.HR.Models.Requests;
 using MSU.HR.Models.Responses;
 using MSU.HR.Services.Interfaces;
 using System.Security.Claims;
-using System.Text.Json;
 
 namespace MSU.HR.Services.Repositories
 {
@@ -57,7 +56,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(code));
+                await _logError.SaveAsync(ex, new { code = code });
                 throw new Exception("Bank CheckCodeExistsAsync Error : " + ex.Message);
             }
         }
@@ -118,7 +117,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(request));
+                await _logError.SaveAsync(ex, request);
                 throw new Exception("Employee Create Error : " + ex.Message);
             }
         }
@@ -139,7 +138,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(id));
+                await _logError.SaveAsync(ex, new { id = id });
                 throw new Exception("Employee Delete Error : " + ex.Message);
             }
         }
@@ -162,7 +161,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(id));
+                await _logError.SaveAsync(ex, new { id = id });
                 throw new Exception("Employee Find Error : " + ex.Message);
             }
         }
@@ -218,7 +217,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, string.Empty);
+                await _logError.SaveAsync(ex, new { search = search, pagination = pagination });
                 throw new Exception("Employee Pagination Error : " + ex.Message);
             }
         }
@@ -311,85 +310,101 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(request));
+                await _logError.SaveAsync(ex, request);
                 throw new Exception("Employee Update Error : " + ex.Message);
             }
         }
 
         public async Task<Employee?> GetEmployeeAsync(string code)
         {
-            var employee = await _context.Employees.Where(i => i.IsActive == true && i.Code == code)
-                 .Include(i => i.Bank)
-                 .Include(i => i.Department)
-                 .Include(i => i.Education)
-                 .Include(i => i.Grade)
-                 .Include(i => i.Job)
-                 .Include(i => i.PTKP)
-                 .Include(i => i.Section)
-                 .Include(i => i.TypeEmployee)
-                 .FirstOrDefaultAsync();
-            return employee;
-            //if (find == null)
-            //    return 0;
+            try
+            {
+                var employee = await _context.Employees.Where(i => i.IsActive == true && i.Code == code)
+                     .Include(i => i.Bank)
+                     .Include(i => i.Department)
+                     .Include(i => i.Education)
+                     .Include(i => i.Grade)
+                     .Include(i => i.Job)
+                     .Include(i => i.PTKP)
+                     .Include(i => i.Section)
+                     .Include(i => i.TypeEmployee)
+                     .FirstOrDefaultAsync();
+                return employee;
+                //if (find == null)
+                //    return 0;
+            }
+            catch (Exception ex)
+            {
+                await _logError.SaveAsync(ex, new { code = code });
+                throw new Exception("Employee GetEmployeeAsync Error : " + ex.Message);
+            }
         }
 
         public async Task<DataTableResponse> GetDataTableEmployeeAsync(DataTableRequest request)
         {
-            DataTableResponse response = new DataTableResponse();
-            int totalRecord = 0;
-            int filterRecord = 0;
-
-            var data = _context.Set<Employee>()
-                .Include(i => i.Department)
-                .Include(i => i.Section)
-                .AsQueryable();
-
-            totalRecord = data.Count();
-
-            if (!string.IsNullOrEmpty(request.searchValue))
+            try
             {
-                data = data.Where(x =>
-                x.Code.ToLower().Contains(request.searchValue.ToLower()) ||
-                x.Name.ToLower().Contains(request.searchValue.ToLower())
-                );
+                DataTableResponse response = new DataTableResponse();
+                int totalRecord = 0;
+                int filterRecord = 0;
 
-                data = data.Where(x => x.Department != null && x.Department.Name.ToLower().Contains(request.searchValue.ToLower()));
-                data = data.Where(x => x.Section != null && x.Section.Name.ToLower().Contains(request.searchValue.ToLower()));
+                var data = _context.Set<Employee>()
+                    .Include(i => i.Department)
+                    .Include(i => i.Section)
+                    .AsQueryable();
 
-            }
+                totalRecord = data.Count();
 
-            filterRecord = data.Count();
-
-            if (!string.IsNullOrEmpty(request.sortColumn) && !string.IsNullOrEmpty(request.sortColumnDirection))
-            {
-                switch (request.sortColumn)
+                if (!string.IsNullOrEmpty(request.searchValue))
                 {
-                    case nameof(Employee.Code):
-                        data = request.sortColumnDirection == "desc" ? data.OrderByDescending(x => x.Code) : data.OrderBy(x => x.Code);
-                        break;
-                    case nameof(Employee.Name):
-                        data = request.sortColumnDirection == "desc" ? data.OrderByDescending(x => x.Name) : data.OrderBy(x => x.Name);
-                        break;
-                    case nameof(Employee.Department):
-                        data = request.sortColumnDirection == "desc" ? data.OrderByDescending(x => x.Department) : data.OrderBy(x => x.Department);
-                        break;
-                    case nameof(Employee.Section):
-                        data = request.sortColumnDirection == "desc" ? data.OrderByDescending(x => x.Section) : data.OrderBy(x => x.Section);
-                        break;
-                    default:
-                        data = request.sortColumnDirection == "desc" ? data.OrderByDescending(x => x.CreatedDate) : data.OrderBy(x => x.CreatedDate);
-                        break;
+                    data = data.Where(x =>
+                    x.Code.ToLower().Contains(request.searchValue.ToLower()) ||
+                    x.Name.ToLower().Contains(request.searchValue.ToLower())
+                    );
+
+                    data = data.Where(x => x.Department != null && x.Department.Name.ToLower().Contains(request.searchValue.ToLower()));
+                    data = data.Where(x => x.Section != null && x.Section.Name.ToLower().Contains(request.searchValue.ToLower()));
+
                 }
+
+                filterRecord = data.Count();
+
+                if (!string.IsNullOrEmpty(request.sortColumn) && !string.IsNullOrEmpty(request.sortColumnDirection))
+                {
+                    switch (request.sortColumn)
+                    {
+                        case nameof(Employee.Code):
+                            data = request.sortColumnDirection == "desc" ? data.OrderByDescending(x => x.Code) : data.OrderBy(x => x.Code);
+                            break;
+                        case nameof(Employee.Name):
+                            data = request.sortColumnDirection == "desc" ? data.OrderByDescending(x => x.Name) : data.OrderBy(x => x.Name);
+                            break;
+                        case nameof(Employee.Department):
+                            data = request.sortColumnDirection == "desc" ? data.OrderByDescending(x => x.Department) : data.OrderBy(x => x.Department);
+                            break;
+                        case nameof(Employee.Section):
+                            data = request.sortColumnDirection == "desc" ? data.OrderByDescending(x => x.Section) : data.OrderBy(x => x.Section);
+                            break;
+                        default:
+                            data = request.sortColumnDirection == "desc" ? data.OrderByDescending(x => x.CreatedDate) : data.OrderBy(x => x.CreatedDate);
+                            break;
+                    }
+                }
+
+                var list = data.Skip(request.skip).Take(request.pageSize).ToList();
+
+                response.draw = request.draw;
+                response.recordsTotal = totalRecord;
+                response.recordsFiltered = filterRecord;
+                response.data = list;
+
+                return response;
             }
-
-            var list = data.Skip(request.skip).Take(request.pageSize).ToList();
-
-            response.draw = request.draw;
-            response.recordsTotal = totalRecord;
-            response.recordsFiltered = filterRecord;
-            response.data = list;
-
-            return response;
+            catch (Exception ex)
+            {
+                await _logError.SaveAsync(ex, request);
+                throw new Exception("Employee GetDataTableEmployeeAsync Error : " + ex.Message);
+            }
         }
     }
 }

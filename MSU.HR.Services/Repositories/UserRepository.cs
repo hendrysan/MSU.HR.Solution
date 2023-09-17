@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Mono.Cecil.Cil;
 using MSU.HR.Contexts;
 using MSU.HR.Models.Entities;
 using MSU.HR.Models.Others;
 using MSU.HR.Services.Interfaces;
 using System.Security.Claims;
-using System.Text.Json;
 
 namespace MSU.HR.Services.Repositories
 {
@@ -35,22 +33,30 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(code));
-                throw new Exception("Bank CheckCodeExistsAsync Error : " + ex.Message);
+                await _logError.SaveAsync(ex, new { code = code });
+                throw new Exception("User CheckCodeExistsAsync Error : " + ex.Message);
             }
         }
 
 
         public async Task<int> ChangePassword(Guid userId, string hasPassword)
         {
-            var user = await _context.Users.Where(i => i.IsActive == true && i.Id == userId.ToString()).FirstOrDefaultAsync();
-            if (user == null)
-                throw new Exception("badrequest Data Not Found");
+            try
+            {
+                var user = await _context.Users.Where(i => i.IsActive == true && i.Id == userId.ToString()).FirstOrDefaultAsync();
+                if (user == null)
+                    throw new Exception("badrequest Data Not Found");
 
-            user.PasswordHash = hasPassword;
-            user.LastModifiedBy = userIdentity.Id.ToString();
-            user.LastModifiedDate = DateTime.Now;
-            return await _context.SaveChangesAsync();
+                user.PasswordHash = hasPassword;
+                user.LastModifiedBy = userIdentity.Id.ToString();
+                user.LastModifiedDate = DateTime.Now;
+                return await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                await _logError.SaveAsync(ex, new { userId = userId, hasPassword = hasPassword });
+                throw new Exception("User ChangePassword Error : " + ex.Message);
+            }
         }
 
         public async Task<int> EmployeeUserConnectedAsync()
@@ -88,7 +94,7 @@ namespace MSU.HR.Services.Repositories
             catch (Exception ex)
             {
                 await _logError.SaveAsync(ex, "");
-                throw new Exception("TypeEmployee Create Error : " + ex.Message);
+                throw new Exception("User EmployeeUserConnectedAsync Error : " + ex.Message);
             }
         }
 
@@ -106,8 +112,8 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(""));
-                throw new Exception("Bank GetProfile Error : " + ex.Message);
+                await _logError.SaveAsync(ex, string.Empty);
+                throw new Exception("User GetProfile Error : " + ex.Message);
             }
         }
 
@@ -125,8 +131,8 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(code));
-                throw new Exception("Bank GetProfile Error : " + ex.Message);
+                await _logError.SaveAsync(ex, new { code = code });
+                throw new Exception("User GetProfile Error : " + ex.Message);
             }
         }
 
@@ -167,20 +173,29 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, code);
-                throw new Exception("TypeEmployee Create Error : " + ex.Message);
+                await _logError.SaveAsync(ex, new { code = code });
+                throw new Exception("User EmployeeUserConnectedAsync Error : " + ex.Message);
             }
         }
 
         public async Task<AspNetUser?> GetProfile(Guid id)
         {
-            var user = await _context.Users
-                   .Where(u => u.Id == id.ToString())
-                   .Include(r => r.Role)
-                   .Include(c => c.Corporate)
-                   .Include(e => e.Employee)
-                   .FirstOrDefaultAsync();
-            return user;
+            try
+            {
+                var user = await _context.Users
+                  .Where(u => u.Id == id.ToString())
+                  .Include(r => r.Role)
+                  .Include(c => c.Corporate)
+                  .Include(e => e.Employee)
+                  .FirstOrDefaultAsync();
+                return user;
+            }
+            catch (Exception ex)
+            {
+                await _logError.SaveAsync(ex, new { id = id });
+                throw new Exception("User GetProfile Error : " + ex.Message);
+            }
+
         }
     }
 }

@@ -16,6 +16,7 @@ namespace MSU.HR.UnitTests.Services
         [Fact]
         public async Task GetBank()
         {
+            Thread.Sleep(1000);
             // Act
             var bank = await _bank.GetBanksAsync();
 
@@ -25,23 +26,26 @@ namespace MSU.HR.UnitTests.Services
         }
 
         [Fact]
-        public async Task GetBankById()
+        public async Task DeleteBank()
         {
-            Thread.Sleep(5000);
+            Thread.Sleep(2000);
             // Arrange
             var bankId = fakeId;
 
             // Act
-            var bank = await _bank.GetBankAsync(bankId);
+            var result = await _bank.DeleteAsync(bankId);
 
             // Assert
-            Assert.NotNull(bank);
-            Assert.Equal(bankId, bank.Id);
+            Assert.NotNull(result);
+            Assert.Equal(1, result);
         }
+
+
 
         [Fact]
         public async Task CreateBank()
         {
+            Thread.Sleep(3000);
             //Arrage
             var bank = new Bank()
             {
@@ -58,5 +62,21 @@ namespace MSU.HR.UnitTests.Services
             Assert.Equal(1, result);
 
         }
+
+        [Fact]
+        public async Task GetBankById()
+        {
+            Thread.Sleep(4000);
+            // Arrange
+            var bankId = fakeId;
+
+            // Act
+            var bank = await _bank.GetBankAsync(bankId);
+
+            // Assert
+            Assert.NotNull(bank);
+            Assert.Equal(bankId, bank.Id);
+        }
+
     }
 }

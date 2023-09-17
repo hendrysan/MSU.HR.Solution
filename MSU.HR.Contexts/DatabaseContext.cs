@@ -13,6 +13,7 @@ namespace MSU.HR.Contexts
             _configuration = configuration;
         }
 
+        public DbSet<Area> Areas { get; set; }
         public DbSet<AspNetUser> AspNetUsers { get; set; }
         public DbSet<AspNetUserClaim> AspNetUserClaims { get; set; }
         public DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }

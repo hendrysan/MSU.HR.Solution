@@ -53,7 +53,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(timeOffId));
+                await _logError.SaveAsync(ex, new { timeOffId = timeOffId, remarks = remarks, status = status });
                 throw new Exception("Time Off SubmitAsync Error : " + ex.Message);
             }
         }
@@ -85,7 +85,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(timeOffId));
+                await _logError.SaveAsync(ex, new { timeOffId = timeOffId, remarks = remarks });
                 throw new Exception("Time Off ApproveAsync Error : " + ex.Message);
             }
         }
@@ -122,7 +122,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(userId));
+                await _logError.SaveAsync(ex, new { userId = userId });
                 throw new Exception("Time Off GetCountLeaveAllowanceAsync Error : " + ex.Message);
             }
         }
@@ -137,7 +137,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, "");
+                await _logError.SaveAsync(ex, string.Empty);
                 throw new Exception("Time Off GetCountLeaveAllowanceAsync Error : " + ex.Message);
             }
         }
@@ -151,7 +151,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(timeOffId));
+                await _logError.SaveAsync(ex, new { timeOffId = timeOffId });
                 throw new Exception("Time Off GetTimeOffHistoriesAsync Error : " + ex.Message);
             }
         }
@@ -165,7 +165,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(userId));
+                await _logError.SaveAsync(ex, new { userId = userId });
                 throw new Exception("Time Off GetTimeOffsAsync Error : " + ex.Message);
             }
         }
@@ -180,38 +180,46 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, "");
+                await _logError.SaveAsync(ex, string.Empty);
                 throw new Exception("Time Off GetTimeOffsAsync Error : " + ex.Message);
             }
         }
 
         public async Task<Employee?> GetUserSuperiorityAsync(string code)
         {
-            var employee = await _context.Employees.Where(i => i.Code == code)
-                .Include(i => i.Department)
-                .Include(i => i.Section)
-                .Include(i => i.Grade)
-                .FirstOrDefaultAsync();
+            try
+            {
+                var employee = await _context.Employees.Where(i => i.Code == code)
+                    .Include(i => i.Department)
+                    .Include(i => i.Section)
+                    .Include(i => i.Grade)
+                    .FirstOrDefaultAsync();
 
-            if (employee == null)
-                return null;
+                if (employee == null)
+                    return null;
 
-            var department = employee.Department;
-            var section = employee.Section;
-            var grade = employee.Grade;
+                var department = employee.Department;
+                var section = employee.Section;
+                var grade = employee.Grade;
 
-            var superiors = await _context.Employees
-                .Include(i => i.Department)
-                .Include(i => i.Section)
-                .Include(i => i.Grade)
-                .Where(i => i.Department == department && i.Section == section && i.IsActive && i.Grade != null)
-                .ToListAsync();
+                var superiors = await _context.Employees
+                    .Include(i => i.Department)
+                    .Include(i => i.Section)
+                    .Include(i => i.Grade)
+                    .Where(i => i.Department == department && i.Section == section && i.IsActive && i.Grade != null)
+                    .ToListAsync();
 
-            if (superiors.Count == 0)
-                return null;
+                if (superiors.Count == 0)
+                    return null;
 
-            var superior = superiors.Where(i => Convert.ToInt32(i.Grade?.Code) < Convert.ToInt32(grade?.Code)).OrderDescending().FirstOrDefault();
-            return superior;
+                var superior = superiors.Where(i => Convert.ToInt32(i.Grade?.Code) < Convert.ToInt32(grade?.Code)).OrderDescending().FirstOrDefault();
+                return superior;
+            }
+            catch (Exception ex)
+            {
+                await _logError.SaveAsync(ex, new { code = code });
+                throw new Exception("Time Off GetUserSuperiorityAsync Error : " + ex.Message);
+            }
         }
 
         public async Task<int> RejectAsync(Guid timeOffId, string remarks)
@@ -244,7 +252,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(timeOffId));
+                await _logError.SaveAsync(ex, new { timeOffId = timeOffId, remarks = remarks });
                 throw new Exception("Time Off ApproveAsync Error : " + ex.Message);
             }
         }
@@ -282,7 +290,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(request));
+                await _logError.SaveAsync(ex, request);
                 throw new Exception("Time Off SubmitAsync Error : " + ex.Message);
             }
         }
@@ -327,7 +335,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(userId));
+                await _logError.SaveAsync(ex, new { userId = userId });
                 throw new Exception("Time Off ExpiredAsync Error : " + ex.Message);
             }
         }
@@ -341,7 +349,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(timeOffId));
+                await _logError.SaveAsync(ex, new { timeOffId = timeOffId });
                 throw new Exception("Time Off GetTimeOffDetailAsync Error : " + ex.Message);
             }
         }
@@ -377,7 +385,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(timeOffId));
+                await _logError.SaveAsync(ex, new { timeOffId = timeOffId });
                 throw new Exception("Time Off FinishAsync Error : " + ex.Message);
             }
         }
@@ -392,7 +400,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(code));
+                await _logError.SaveAsync(ex, new { code = code });
                 throw new Exception("Time Off GetPendingApprovalTimeOffsAsync Error : " + ex.Message);
             }
         }
@@ -408,7 +416,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(""));
+                await _logError.SaveAsync(ex, string.Empty);
                 throw new Exception("Time Off GetPendingApprovalTimeOffsAsync Error : " + ex.Message);
             }
         }
@@ -434,7 +442,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(string.Empty));
+                await _logError.SaveAsync(ex, string.Empty);
                 throw new Exception("Time Off GetPendingFinishTimeOffsAsync Error : " + ex.Message);
             }
         }
@@ -474,7 +482,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(code));
+                await _logError.SaveAsync(ex, new { code = code, year = year });
                 throw new Exception("Time Off GetTimeOffSummaryAsync Error : " + ex.Message);
             }
         }

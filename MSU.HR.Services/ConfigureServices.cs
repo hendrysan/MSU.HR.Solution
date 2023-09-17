@@ -30,6 +30,8 @@ namespace MSU.HR.Services
 
             services.AddScoped<IAttendance, AttendanceRepository>();
 
+            services.AddScoped<IArea, AreaRepository>();
+
             return services;
         }
     }

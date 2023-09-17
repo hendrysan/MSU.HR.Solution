@@ -7,9 +7,7 @@ using MSU.HR.Models.Others;
 using MSU.HR.Models.Paginations;
 using MSU.HR.Models.Requests;
 using MSU.HR.Services.Interfaces;
-using Org.BouncyCastle.Asn1.Ocsp;
 using System.Security.Claims;
-using System.Text.Json;
 
 namespace MSU.HR.Services.Repositories
 {
@@ -39,8 +37,8 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(code));
-                throw new Exception("Bank CheckCodeExistsAsync Error : " + ex.Message);
+                await _logError.SaveAsync(ex, new { code = code });
+                throw new Exception("Section CheckCodeExistsAsync Error : " + ex.Message);
             }
         }
 
@@ -65,7 +63,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(request));
+                await _logError.SaveAsync(ex, request);
                 throw new Exception("Section Create Error : " + ex.Message);
             }
         }
@@ -86,7 +84,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(id));
+                await _logError.SaveAsync(ex, new { id = id });
                 throw new Exception("Section Delete Error : " + ex.Message);
             }
         }
@@ -100,7 +98,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(id));
+                await _logError.SaveAsync(ex, new { id = id });
                 throw new Exception("Section Find Error : " + ex.Message);
             }
         }
@@ -131,7 +129,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, string.Empty);
+                await _logError.SaveAsync(ex, new { departmentId = departmentId, search = search, pagination = pagination });
                 throw new Exception("Section Pagination Error : " + ex.Message);
             }
         }
@@ -145,7 +143,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, string.Empty);
+                await _logError.SaveAsync(ex, new { departmentId = departmentId });
                 throw new Exception("Section Get All Error : " + ex.Message);
             }
         }
@@ -166,7 +164,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, string.Empty);
+                await _logError.SaveAsync(ex, new { departmentId = departmentId });
                 throw new Exception("Section Dropdown Error : " + ex.Message);
             }
         }
@@ -190,7 +188,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, string.Empty);
+                await _logError.SaveAsync(ex, new { id = id, request = request });
                 throw new Exception("Section Update Error : " + ex.Message);
             }
         }

@@ -2,6 +2,6 @@
 {
     public interface ILogError
     {
-        Task<int> SaveAsync(Exception ex, string body);
+        Task<int> SaveAsync(Exception ex, object body);
     }
 }

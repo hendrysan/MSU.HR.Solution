@@ -7,7 +7,6 @@ using MSU.HR.Models.Others;
 using MSU.HR.Models.Paginations;
 using MSU.HR.Services.Interfaces;
 using System.Security.Claims;
-using System.Text.Json;
 
 namespace MSU.HR.Services.Repositories
 {
@@ -35,8 +34,8 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(code));
-                throw new Exception("Bank CheckCodeExistsAsync Error : " + ex.Message);
+                await _logError.SaveAsync(ex, new { code = code });
+                throw new Exception("TypeEmployee CheckCodeExistsAsync Error : " + ex.Message);
             }
         }
 
@@ -54,7 +53,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(entity));
+                await _logError.SaveAsync(ex, entity);
                 throw new Exception("TypeEmployee Create Error : " + ex.Message);
             }
         }
@@ -75,7 +74,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(id));
+                await _logError.SaveAsync(ex, new { id = id });
                 throw new Exception("TypeEmployee Delete Error : " + ex.Message);
             }
         }
@@ -89,7 +88,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, JsonSerializer.Serialize(id));
+                await _logError.SaveAsync(ex, new { id = id });
                 throw new Exception("TypeEmployee Find Error : " + ex.Message);
             }
         }
@@ -112,7 +111,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, string.Empty);
+                await _logError.SaveAsync(ex, new { search = search, pagination = pagination });
                 throw new Exception("TypeEmployee Pagination Error : " + ex.Message);
             }
         }
@@ -170,7 +169,7 @@ namespace MSU.HR.Services.Repositories
             }
             catch (Exception ex)
             {
-                await _logError.SaveAsync(ex, string.Empty);
+                await _logError.SaveAsync(ex, new { id = id, entity = entity });
                 throw new Exception("TypeEmployee Update Error : " + ex.Message);
             }
         }
