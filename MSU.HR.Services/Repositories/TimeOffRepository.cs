@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using MSU.HR.Commons.Enums;
 using MSU.HR.Contexts;
 using MSU.HR.Models.Entities;
@@ -10,7 +8,6 @@ using MSU.HR.Models.Requests;
 using MSU.HR.Models.Responses;
 using MSU.HR.Services.Interfaces;
 using System.Security.Claims;
-using System.Text.Json;
 
 namespace MSU.HR.Services.Repositories
 {

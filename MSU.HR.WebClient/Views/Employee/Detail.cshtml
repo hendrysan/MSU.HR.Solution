@@ -24,43 +24,244 @@
         </div>
         <div class="card-body">
             <ul class="nav nav-tabs" id="icon-tab" role="tablist">
-                <li class="nav-item"><a class="nav-link active txt-secondary" id="icon-basic-tab" data-bs-toggle="tab" href="#icon-basic" role="tab" aria-controls="icon-basic" aria-selected="true"> <i class="icofont icofont-ui-home"></i>Basic</a></li>
-                <li class="nav-item"><a class="nav-link txt-secondary" id="job-icon-tabs" data-bs-toggle="tab" href="#job-icon" role="tab" aria-controls="job-icon" aria-selected="false"><i class="icofont icofont-man-in-glasses"></i>Job</a></li>
-                <li class="nav-item"><a class="nav-link txt-secondary" id="salary-icon-tab" data-bs-toggle="tab" href="#salary-icon" role="tab" aria-controls="salary-icon" aria-selected="false"><i class="icofont icofont-contacts"></i>Salary</a></li>
-                <li class="nav-item"><a class="nav-link txt-secondary" id="allowance-icon-tab" data-bs-toggle="tab" href="#allowance-icon" role="tab" aria-controls="allowance-icon" aria-selected="false"><i class="icofont icofont-contacts"></i>Allowance</a></li>
-                <li class="nav-item"><a class="nav-link txt-secondary" id="role-icon-tab" data-bs-toggle="tab" href="#role-icon" role="tab" aria-controls="role-icon" aria-selected="false"><i class="icofont icofont-contacts"></i>Role</a></li>
-                <li class="nav-item"><a class="nav-link txt-secondary" id="others-icon-tab" data-bs-toggle="tab" href="#others-icon" role="tab" aria-controls="others-icon" aria-selected="false"><i class="icofont icofont-contacts"></i>Others</a></li>
+                <li class="nav-item"><a class="nav-link active txt-secondary" id="icon-basic-tab" data-bs-toggle="tab" href="#icon-basic" role="tab" aria-controls="icon-basic" aria-selected="true"> <i class="icofont icofont-ui-home"></i>General</a></li>
+                <li class="nav-item"><a class="nav-link txt-secondary" id="job-icon-tabs" data-bs-toggle="tab" href="#job-icon" role="tab" aria-controls="job-icon" aria-selected="false"><i class="icofont icofont-people"></i>Job</a></li>
+                <li class="nav-item"><a class="nav-link txt-secondary" id="salary-icon-tab" data-bs-toggle="tab" href="#salary-icon" role="tab" aria-controls="salary-icon" aria-selected="false"><i class="icofont icofont-bank-alt"></i>Salary</a></li>
+                <li class="nav-item"><a class="nav-link txt-secondary" id="role-icon-tab" data-bs-toggle="tab" href="#role-icon" role="tab" aria-controls="role-icon" aria-selected="false"><i class="icofont icofont-company"></i>Role</a></li>
+                <li class="nav-item"><a class="nav-link txt-secondary" id="others-icon-tab" data-bs-toggle="tab" href="#others-icon" role="tab" aria-controls="others-icon" aria-selected="false"><i class="icofont icofont-clip"></i>Others</a></li>
             </ul>
             <div class="tab-content" id="icon-tabContent">
                 <div class="tab-pane fade show active" id="icon-basic" role="tabpanel" aria-labelledby="icon-basic-tab">
                     <div class="pt-3">
-                        <h1>Basic</h1>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <h4 class="mb-3">General Information</h4>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <img class="img-70 rounded-circle" alt="" src="@Url.Content("~/assets/images/user/7.jpg")">
+                                            </div>
+
+                                            <div class="col-8">
+                                                <label class="form-label" for="">Full Name</label>
+                                                @Html.TextBoxFor(i=>i.Employee.Name, new { @class = "form-control disabled", @readonly = "readonly" })
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <label class="form-label" for="">Brith Date</label>
+                                            @Html.TextBoxFor(i=>i.Employee.BrithDate, "{0:yyyy-MMM-dd}",new { @class = "form-control disabled", @readonly = "readonly" })
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label" for="">Email</label>
+                                            @Html.TextBoxFor(i=>i.Employee.Email, new { @class = "form-control disabled", @readonly = "readonly" })
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label" for="">Identity Number</label>
+                                            @Html.TextBoxFor(i=>i.Employee.NoIdentity, new { @class = "form-control disabled", @readonly = "readonly" })
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label" for="">Phone Number</label>
+                                            @Html.TextBoxFor(i=>i.Employee.NoIdentity, new { @class = "form-control disabled", @readonly = "readonly" })
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label" for="">Gender</label>
+                                            @Html.TextBoxFor(i=>i.Employee.NoIdentity, new { @class = "form-control disabled", @readonly = "readonly" })
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label" for="">Religion</label>
+                                            @Html.TextBoxFor(i=>i.Employee.NoIdentity, new { @class = "form-control disabled", @readonly = "readonly" })
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label" for="">Material Status</label>
+                                            @Html.TextBoxFor(i=>i.Employee.NoIdentity, new { @class = "form-control disabled", @readonly = "readonly" })
+                                        </div>
+                                      
+
+
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="col-12">
+                                            <label class="form-label" for="">Address</label>
+                                            @Html.TextAreaFor(i=>i.Employee.Address, new { @class = "form-control disabled", @readonly = "readonly" })
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label" for="">Village</label>
+                                            @Html.TextBoxFor(i=>i.Employee.City, new { @class = "form-control disabled", @readonly = "readonly" })
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label" for="">SubDistrict</label>
+                                            @Html.TextBoxFor(i=>i.Employee.City, new { @class = "form-control disabled", @readonly = "readonly" })
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label" for="">District or City</label>
+                                            @Html.TextBoxFor(i=>i.Employee.City, new { @class = "form-control disabled", @readonly = "readonly" })
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label" for="">Province</label>
+                                            @Html.TextBoxFor(i=>i.Employee.City, new { @class = "form-control disabled", @readonly = "readonly" })
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label" for="">ZipCode</label>
+                                            @Html.TextBoxFor(i=>i.Employee.City, new { @class = "form-control disabled", @readonly = "readonly" })
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                        </div>
                     </div>
 
                 </div>
                 <div class="tab-pane fade" id="job-icon" role="tabpanel" aria-labelledby="job-icon-tabs">
                     <div class="pt-3">
-                        <h1>Job</h1>
+                        <div class="row">
+                            <div class="col-12">
+                                <h4 class="mb-3">Job Information</h4>
+                                <div class="row">
+                                    <div class="col-6">
+
+                                        <div class="col-12">
+                                            <label class="form-label" for="">Department</label>
+                                            @Html.TextBoxFor(i=>i.Employee.Department.Name, new { @class = "form-control disabled", @readonly = "readonly" })
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label" for="">Grade</label>
+                                            @Html.TextBoxFor(i=>i.Employee.Grade.Code, new { @class = "form-control disabled", @readonly = "readonly" })
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label" for="">Job</label>
+                                            @Html.TextBoxFor(i=>i.Employee.Job.Id, new { @class = "form-control disabled", @readonly = "readonly" })
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label" for="">Section</label>
+                                            @Html.TextBoxFor(i=>i.Employee.Section.Name, new { @class = "form-control disabled", @readonly = "readonly" })
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label" for="">Type Employee</label>
+                                            @Html.TextBoxFor(i=>i.Employee.TypeEmployee.Name, new { @class = "form-control disabled", @readonly = "readonly" })
+                                        </div>
+
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="col-12">
+                                            <label class="form-label" for="">Code</label>
+                                            @Html.TextBoxFor(i=>i.Employee.Code, new { @class = "form-control disabled", @readonly = "readonly" })
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label" for="">Join Date</label>
+                                            @Html.TextBoxFor(i=>i.Employee.JoinDate, "{0: yyyy-MMM-dd}",new { @class = "form-control disabled", @readonly = "readonly" })
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label" for="">Resign Date</label>
+                                            @Html.TextBoxFor(i=>i.Employee.ResignDate,"{0: yyyy-MMM-dd}", new { @class = "form-control disabled", @readonly = "readonly" })
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                        </div>
                     </div>
                 </div>
                 <div class="tab-pane fade" id="salary-icon" role="tabpanel" aria-labelledby="salary-icon-tabs">
                     <div class="pt-3">
-                        <h1>Salary</h1>
-                    </div>
-                </div>
-                <div class="tab-pane fade" id="allowance-icon" role="tabpanel" aria-labelledby="allowance-icon-tabs">
-                    <div class="pt-3">
-                        <h1>allowance</h1>
+                        <div class="row">
+                            <div class="col-12">
+                                <h4 class="mb-3">Salary Information</h4>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="col-12">
+                                            <label class="form-label" for="">Base Allowance</label>
+                                            @Html.TextBoxFor(i=>i.Employee.BaseSalery, new { @class = "form-control disabled", @readonly = "readonly" })
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label" for="">Grade Allowance</label>
+                                            @Html.TextBoxFor(i=>i.Employee.GradeAllowance, new { @class = "form-control disabled", @readonly = "readonly" })
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label" for="">Meal Allowance</label>
+                                            @Html.TextBoxFor(i=>i.Employee.MealAllowance, new { @class = "form-control disabled", @readonly = "readonly" })
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label" for="">Transportation Allowance</label>
+                                            @Html.TextBoxFor(i=>i.Employee.TransportationAllowance, new { @class = "form-control disabled", @readonly = "readonly" })
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label" for="">Others Allowance</label>
+                                            @Html.TextBoxFor(i=>i.Employee.OtherAllowance, new { @class = "form-control disabled", @readonly = "readonly" })
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="col-12">
+                                            <label class="form-label" for="">Bank</label>
+                                            @Html.TextBoxFor(i=>i.Employee.Bank, new { @class = "form-control disabled", @readonly = "readonly" })
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label" for="">Account Number</label>
+                                            @Html.TextBoxFor(i=>i.Employee.BankAccountNumber, new { @class = "form-control disabled", @readonly = "readonly" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
                 <div class="tab-pane fade" id="role-icon" role="tabpanel" aria-labelledby="role-icon-tabs">
                     <div class="pt-3">
-                        <h1>role</h1>
+                        <div class="row">
+                            <div class="col-12">
+                                <h4 class="mb-3">Roles Information</h4>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="col-12">
+                                            <label class="form-label" for="">Role</label>
+                                            @Html.TextBoxFor(i=>i.User.Role.Name, new { @class = "form-control disabled", @readonly = "readonly" })
+                                        </div>                                        
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="col-12">
+                                            <label class="form-label" for="">Access Login</label>
+                                            @Html.TextBoxFor(i=>i.User.IsActive, new { @class = "form-control disabled", @readonly = "readonly" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
                 <div class="tab-pane fade" id="others-icon" role="tabpanel" aria-labelledby="others-icon-tabs">
                     <div class="pt-3">
-                        <h1>others</h1>
+                        <div class="row">
+                            <div class="col-12">
+                                <h4 class="mb-3">Others Information</h4>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="col-12">
+                                            <label class="form-label" for="">
+                                                Mother's name
+                                            </label>
+                                            @Html.TextBoxFor(i=>i.Employee.NoIdentity, new { @class = "form-control disabled", @readonly = "readonly" })
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label" for="">Education</label>
+                                            @Html.TextBoxFor(i=>i.Employee.Education.Name, new { @class = "form-control disabled", @readonly = "readonly" })
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
             </div>

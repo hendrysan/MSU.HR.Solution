@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MSU.HR.Contexts;
-using MSU.HR.Models.Entities;
 using MSU.HR.Models.Others;
 using MSU.HR.Services.Interfaces;
 
