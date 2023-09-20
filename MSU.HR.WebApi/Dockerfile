@@ -8,6 +8,10 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["MSU.HR.WebApi/MSU.HR.WebApi.csproj", "MSU.HR.WebApi/"]
+COPY ["MSU.HR.Commons/MSU.HR.Commons.csproj", "MSU.HR.Commons/"]
+COPY ["MSU.HR.Contexts/MSU.HR.Contexts.csproj", "MSU.HR.Contexts/"]
+COPY ["MSU.HR.Models/MSU.HR.Models.csproj", "MSU.HR.Models/"]
+COPY ["MSU.HR.Services/MSU.HR.Services.csproj", "MSU.HR.Services/"]
 RUN dotnet restore "MSU.HR.WebApi/MSU.HR.WebApi.csproj"
 COPY . .
 WORKDIR "/src/MSU.HR.WebApi"
