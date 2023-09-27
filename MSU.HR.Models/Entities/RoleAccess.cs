@@ -27,7 +27,7 @@ namespace MSU.HR.Models.Entities
         public bool IsAdd { get; set; } = false;
         [Required]
         public bool IsEdit { get; set; } = false;
-        [Required]
+        [Required] 
         public bool IsDelete { get; set; } = false;
         [Required]
         public bool IsPrint { get; set; } = false;

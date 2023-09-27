@@ -21,8 +21,13 @@ namespace MSU.HR.Models.Entities
 
         public DateTime? ResignDate { get; set; }
 
+        public string? PlaceOfBirth { get; set; }
+
         [Required]
         public DateTime? BrithDate { get; set; }
+
+        public string? Phone { get; set; }
+        public string? Religion { get; set; }
 
         [Required]
         [StringLength(250, MinimumLength = 3)]
