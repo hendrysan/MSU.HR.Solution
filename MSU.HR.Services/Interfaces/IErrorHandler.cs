@@ -8,6 +8,6 @@ namespace MSU.HR.Services.Interfaces
         Task<BadRequestObjectResult> BadRequestAsync(string message, object data);
         Task<BadRequestObjectResult> BadRequestAsync(string message, int errorCode);
         Task<BadRequestObjectResult> BadRequestAsync(string message, object data, int errorCode);
-        
+
     }
 }

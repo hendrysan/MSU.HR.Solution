@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MSU.HR.Models.Entities;
-using MSU.HR.Models.Others;
-using System.ComponentModel.DataAnnotations;
+﻿using MSU.HR.Models.Entities;
 
 namespace MSU.HR.Models.ViewModels
 {

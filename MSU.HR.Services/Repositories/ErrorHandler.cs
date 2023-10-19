@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using MSU.HR.Models.Others;
-using MSU.HR.Services.Interfaces;
 
 namespace MSU.HR.Services.Repositories
 {
