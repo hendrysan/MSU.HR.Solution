@@ -40,7 +40,7 @@ namespace MSU.HR.Contexts
         public DbSet<DocumentAttendance> DocumentAttendances { get; set; }
         public DbSet<DocumentAttendanceDetail> DocumentAttendanceDetails { get; set; }
 
-        
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
@@ -50,12 +50,16 @@ namespace MSU.HR.Contexts
             if (connectionUsed == "mysql")
             {
                 connectionString = _configuration.GetConnectionString("MySQLConnection");
-                string mySqlConnection = connectionString;
-                options.UseMySQL(mySqlConnection);
+                options.UseMySQL(connectionString);
+            }
+            else if (connectionUsed == "postgres")
+            {
+                connectionString = _configuration.GetConnectionString("PostgreSQLConnection");
+                options.UseNpgsql(connectionString);
             }
             else
             {
-                throw new Exception("Connection Used Cannot Found OnConfiguration. ["+ connectionUsed +"] = "+ connectionString);
+                throw new Exception("Connection Used Cannot Found OnConfiguration. [" + connectionUsed + "] = " + connectionString);
             }
         }
 
