@@ -7,11 +7,11 @@ EXPOSE 5443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["./MSU.HR.WebClient/MSU.HR.WebClient.csproj", "MSU.HR.WebClient/"]
-COPY ["./MSU.HR.Commons/MSU.HR.Commons.csproj", "MSU.HR.Commons/"]
-COPY ["./MSU.HR.Contexts/MSU.HR.Contexts.csproj", "MSU.HR.Contexts/"]
-COPY ["./MSU.HR.Models/MSU.HR.Models.csproj", "MSU.HR.Models/"]
-COPY ["./MSU.HR.Services/MSU.HR.Services.csproj", "MSU.HR.Services/"]
+COPY ["MSU.HR.WebClient/MSU.HR.WebClient.csproj", "MSU.HR.WebClient/"]
+COPY ["MSU.HR.Commons/MSU.HR.Commons.csproj", "MSU.HR.Commons/"]
+COPY ["MSU.HR.Contexts/MSU.HR.Contexts.csproj", "MSU.HR.Contexts/"]
+COPY ["MSU.HR.Models/MSU.HR.Models.csproj", "MSU.HR.Models/"]
+COPY ["MSU.HR.Services/MSU.HR.Services.csproj", "MSU.HR.Services/"]
 RUN dotnet restore "MSU.HR.WebClient/MSU.HR.WebClient.csproj"
 COPY . .
 WORKDIR "/src/MSU.HR.WebClient"
