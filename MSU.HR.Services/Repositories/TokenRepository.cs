@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using MSU.HR.Models.Entities;
 using MSU.HR.Services.Interfaces;
@@ -89,9 +90,10 @@ namespace MSU.HR.Services.Repositories
 
         private SigningCredentials CreateSigningCredentials()
         {
+            var jwtSecret = _configuration.GetSection("JWT:Secret").Value;
             return new SigningCredentials(
                 new SymmetricSecurityKey(
-                    Encoding.UTF8.GetBytes(_configuration.GetSection("JWT:Secret").Value)
+                    Encoding.UTF8.GetBytes(jwtSecret)
                 ),
                 SecurityAlgorithms.HmacSha256
             );
@@ -99,16 +101,19 @@ namespace MSU.HR.Services.Repositories
 
         public ClaimsPrincipal? GetPrincipalFromExpiredToken(string? token)
         {
+            var jwtSecret = _configuration.GetSection("JWT:Secret").Value;
+            var encodeSecret = Encoding.UTF8.GetBytes(jwtSecret);
             var tokenValidationParameters = new TokenValidationParameters
             {
                 ValidateAudience = false,
                 ValidateIssuer = false,
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"])),
+                IssuerSigningKey = new SymmetricSecurityKey(encodeSecret),
                 ValidateLifetime = false
             };
-
+            
             var tokenHandler = new JwtSecurityTokenHandler();
+            IdentityModelEventSource.ShowPII = true;
             var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
             if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
                 throw new SecurityTokenException("Invalid token");

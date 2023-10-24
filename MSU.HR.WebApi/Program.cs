@@ -1,5 +1,7 @@
+using Microsoft.IdentityModel.Logging;
 using MSU.HR.WebApi;
 using MSU.HR.WebApi.Extensions;
+using System.IdentityModel.Tokens.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +10,8 @@ builder.Services.AddWebAPIServices(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
+//var host = builder.Build();
+//_ = new JwtPayload();
 
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())

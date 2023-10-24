@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using MSU.HR.Contexts;
 using MSU.HR.Models.Entities;
 using MSU.HR.Models.Others;
@@ -29,8 +30,20 @@ namespace MSU.HR.Services.Repositories
 
         public async Task<int> SaveAsync(Exception ex, object body)
         {
-            var connectionString = _configuration.GetConnectionString("MySQLConnection");
-            using IDbConnection connection = new MySqlConnection(connectionString);
+            var connectionUsed = _configuration.GetSection("ConnectionUsed").Value.ToString().ToLower();
+            string connectionString = string.Empty;
+            IDbConnection connection;
+
+            if (connectionUsed == "postgres")
+            {
+                connectionString = _configuration.GetConnectionString("PostgreSQLConnection");
+                connection = new Npgsql.NpgsqlConnection(connectionString);
+            }
+            else
+            {
+                connectionString = _configuration.GetConnectionString("MySQLConnection");
+                connection = new MySqlConnection(connectionString);
+            }
 
             LogError entity = new LogError();
             var httpContext = _httpContextAccessor.HttpContext;
@@ -50,9 +63,6 @@ namespace MSU.HR.Services.Repositories
                 entity.IP = ip;
                 entity.IPClient = ipClient;
             }
-
-
-
 
             string msg = "";
             string type = "";

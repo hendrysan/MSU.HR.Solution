@@ -1,0 +1,130 @@
+﻿@using MSU.HR.Models.Requests;
+@model RegisterRequest;
+@{
+    Layout = "_LayoutLogin";
+}
+
+
+@section Styles {
+    <style>
+        .field-validation-error {
+            color: red;
+        }
+
+        .field-validation-valid {
+            display: none;
+        }
+
+        input.input-validation-error {
+            border: 1px solid red;
+        }
+
+        .validation-summary-errors {
+            color: red;
+            font-size: 1.1em;
+        }
+
+        .validation-summary-valid {
+            display: none;
+        }
+
+        .register-main {
+            width: 800px;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 37px rgba(8, 21, 66, 0.05);
+            margin: 0 auto;
+            background-color: #fff;
+        }
+    </style>
+}
+
+
+<div>
+    <div>
+        <a class="logo" href="#">
+            <img class="img-fluid for-light" src="https://www.mitrasolutech.com/mitrasolutech.com/payroll/image/logo.png" alt="looginpage">
+        </a>
+    </div>
+    <div class="register-main">
+        <form class="theme-form" method="post" asp-controller="Auth" asp-action="Register" needs-validation asp-route-returnurl="@ViewData["returnUrl"]">
+            <h4>Register account</h4>
+            <p>Enter your Identity & password to register</p>
+
+            @Html.AntiForgeryToken()
+            <div class="row">
+
+                <div class="col-6">
+                    <div class="form-group">
+                        <label class="col-form-label">Full Name</label>
+                        @Html.TextBoxFor(m => m.FullName, new { @class = "form-control", @type = "text", @placeholder = "Jhon Doe", @autofocus="autofocus" })
+                    </div>
+                    <span asp-validation-for="FullName" class="text-danger"></span>
+
+                    <div class="form-group">
+                        <label class="col-form-label">Username</label>
+                        @Html.TextBoxFor(m => m.Username, new { @class = "form-control", @type = "text", @placeholder = "jhon.doe", @autofocus="autofocus" })
+                    </div>
+                    <span asp-validation-for="Username" class="text-danger"></span>
+
+                    <div class="form-group">
+                        <label class="col-form-label">Email</label>
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @type = "email", @placeholder = "jhon.doe@mail.com", @autofocus="autofocus" })
+                    </div>
+                    <span asp-validation-for="Email" class="text-danger"></span>
+
+                    <div class="form-group">
+                        <label class="col-form-label">Phone Number / WA (6281xxx)</label>
+                        @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control", @type = "text", @placeholder = "62812XXXXXXX", @autofocus="autofocus" })
+                    </div>
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label class="col-form-label">Code NIK</label>
+                        @Html.TextBoxFor(m => m.CodeNIK, new { @class = "form-control", @type = "text", @placeholder = "123456789", @autofocus="autofocus" })
+                    </div>
+                    <span asp-validation-for="CodeNIK" class="text-danger"></span>
+
+                    <div class="form-group">
+                        <label class="col-form-label">Password</label>
+                        @Html.TextBoxFor(m => m.Password, new { @class = "form-control", @type = "password", @autofocus="autofocus" })
+                    </div>
+                    <span asp-validation-for="Password" class="text-danger"></span>
+
+                    <div class="form-group">
+                        <label class="col-form-label">Confirm Password</label>
+                        @Html.TextBoxFor(m => m.ConfirmPassword, new { @class = "form-control", @type = "password", @autofocus="autofocus" })
+                    </div>
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
+            </div>
+
+
+            <div class="form-group mb-0">
+                <div class="text-end mt-3">
+                    <input class="btn btn-primary btn-block w-100" type="submit" value="Register" />
+                </div>
+            </div>
+            <p class="mt-4 mb-0 text-small">Back to <a class="ms-2" href="@Url.Action("Login","Auth")">Login</a></p>
+
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#showPass').on('click', function () {
+                var passInput = $("#passInput");
+                if (passInput.attr('type') === 'password') {
+                    passInput.attr('type', 'text');
+                } else {
+                    passInput.attr('type', 'password');
+                }
+            })
+        })
+
+    </script>
+}

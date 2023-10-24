@@ -7,8 +7,6 @@ using MSU.HR.Contexts;
 using MSU.HR.Models.Entities;
 using MSU.HR.Models.Others;
 using MSU.HR.Services;
-using MSU.HR.Services.Interfaces;
-using MSU.HR.Services.Repositories;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -16,7 +14,7 @@ namespace MSU.HR.WebApi
 {
     public static class ConfigureServices
     {
-        public static IConfiguration? Configuration { get; }
+        //public static IConfiguration? _configuration { get; }
         public static IServiceCollection AddWebAPIServices(this IServiceCollection services, IConfiguration configuration)
         {
 
@@ -85,6 +83,8 @@ namespace MSU.HR.WebApi
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
+
+                    var jwtSecret = configuration.GetSection("JWT:Secret").Value;
                     options.TokenValidationParameters = new TokenValidationParameters()
                     {
                         ClockSkew = TimeSpan.Zero,
@@ -95,7 +95,7 @@ namespace MSU.HR.WebApi
                         ValidIssuer = "apiWithAuthBackend",
                         ValidAudience = "apiWithAuthBackend",
                         IssuerSigningKey = new SymmetricSecurityKey(
-                            Encoding.UTF8.GetBytes("*&^!@#$%@!SomethingSecret!@%$#@!^&*")
+                            Encoding.UTF8.GetBytes(jwtSecret)
                         ),
                     };
                     options.Events = new JwtBearerEvents

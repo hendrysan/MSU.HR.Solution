@@ -19,9 +19,6 @@ namespace MSU.HR.UnitTests.Services
             Thread.Sleep(1000);
             // Act
             var bank = await _bank.GetBanksAsync();
-
-            // Assert
-            Assert.NotNull(bank);
             Assert.NotEmpty(bank);
         }
 
@@ -34,9 +31,6 @@ namespace MSU.HR.UnitTests.Services
 
             // Act
             var result = await _bank.DeleteAsync(bankId);
-
-            // Assert
-            Assert.NotNull(result);
             Assert.Equal(1, result);
         }
 
@@ -58,7 +52,6 @@ namespace MSU.HR.UnitTests.Services
             var result = await _bank.CreateAsync(bank);
 
             // Assert
-            Assert.NotNull(result);
             Assert.Equal(1, result);
 
         }
@@ -72,9 +65,6 @@ namespace MSU.HR.UnitTests.Services
 
             // Act
             var bank = await _bank.GetBankAsync(bankId);
-
-            // Assert
-            Assert.NotNull(bank);
             Assert.Equal(bankId, bank.Id);
         }
 

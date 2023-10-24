@@ -34,6 +34,88 @@ namespace MSU.HR.WebClient.Controllers
             return View(model);
         }
 
+
+        [HttpGet]
+        public IActionResult Registration()
+        {
+            RegisterRequest model = new RegisterRequest();
+            return View(model);
+        }
+
+        [HttpPost("RegisterAsync")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RegisterAsync(RegisterRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                request.Password = "";
+                request.ConfirmPassword = "";
+                ModelState.AddModelError("ModelState", "Invalid login attempt");
+                return View(request);
+            }
+
+            if (request.Password != request.ConfirmPassword)
+            {
+                request.Password = "";
+                request.ConfirmPassword = "";
+                ModelState.AddModelError("ConfirmPassword", "Password not Match");
+                return View(request);
+            }
+
+            var user = await _user.GetProfile(code: request.CodeNIK);
+            if (user is null)
+            {
+                request.Password = "";
+                request.ConfirmPassword = "";
+                ModelState.AddModelError("CodeNIK", "Code Not Found");
+                return View(request);
+            }
+
+            var managedUser = await _userManager.FindByEmailAsync(email: user.Email);
+            if (managedUser is not null)
+            {
+                request.Password = "";
+                request.ConfirmPassword = "";
+                ModelState.AddModelError("Email", "Email Already Registered");
+                return View(request);
+            }
+
+            var employee = await _employee.GetEmployeeAsync(code: request.CodeNIK);
+            if (employee is null)
+            {
+                var task = await _user.EmployeeUserConnectedAsync(user.Code);
+                if (task == 0)
+                    throw new Exception(message: "User to Employee failed Synchronized process, Please Call Administrator");
+            }
+
+            var userNew = new AspNetUser()
+            {
+                FullName = request.FullName ?? string.Empty,
+                UserName = request.Username,
+                Email = request.Email,
+                Code = request.CodeNIK,
+                IsActive = true,
+                CreatedDate = DateTime.Now,
+                CreatedBy = Guid.Empty.ToString(),
+                LastModifiedBy = Guid.Empty.ToString(),
+                LastModifiedDate = DateTime.Now
+            };
+
+            var result = await _userManager.CreateAsync(user, request.Password);
+            if (result.Succeeded)
+            {
+                await _user.EmployeeUserConnectedAsync(code: request.CodeNIK);
+                request.Password = "";
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(error.Code, error.Description);
+            }
+            return View(request);
+
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LoginAsync(LoginRequest request)
